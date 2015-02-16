@@ -7,7 +7,22 @@
 % Two-column style (for submission/review/editing)
 %\documentclass[aps,preprint,prl,superscriptaddress,showpacs]{revtex4}
 
-\usepackage{palatino}
+%\usepackage{palatino}
+% Change to a sans serif font.
+\usepackage{sourcesanspro}
+\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+\usepackage[T1]{fontenc}
+%\usepackage[font=sf,justification=justified]{caption}
+\usepackage[font=sf]{floatrow}
+
+% Rework captions to use sans serif font.
+\makeatletter
+\renewcommand\@make@capt@title[2]{%
+ \@ifx@empty\float@link{\@firstofone}{\expandafter\href\expandafter{\float@link}}%
+  {\textbf{#1}}\sf\@caption@fignum@sep#2\quad
+}%
+\makeatother
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 
@@ -80,7 +95,8 @@
 \begin{document}
 
 %% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Bayesian hidden Markov model analysis of single-molecule force spectroscopy: Characterizing kinetics under measurement uncertainty}
+\title{Bayesian hidden Markov model analysis of single-molecule force spectroscopy:\\
+Characterizing kinetics under measurement uncertainty}
 %\title{Characterizing the uncertainty in equilibrium kinetics from single-molecule force spectroscopy measurements using Bayesian hidden Markov models}
 % JDC: Possible subtitle: Characterizing metastable states and transition rates under measurement uncertainty
 
@@ -106,9 +122,11 @@
  \affiliation{DFG Research Center Matheon, FU Berlin, Arnimallee 6, 14195 Berlin, Germany}
 
 \author{Christian M.~Kaiser}
- \email{cmkaiser@berkeley.edu}
- \affiliation{California Institute of Quantitative Biosciences (QB3), University of California, Berkeley, CA 94720, USA}
- \affiliation{Department of Physics, University of California, Berkeley, CA 94720, USA}
+ %\email{cmkaiser@berkeley.edu}
+ \email{kaiser.jhu.bio@gmail.com}
+% \affiliation{California Institute of Quantitative Biosciences (QB3), University of California, Berkeley, CA 94720, USA}
+ %\affiliation{Department of Physics, University of California, Berkeley, CA 94720, USA}
+ \affiliation{Department of Biology, Krieger School of Arts and Sciences, Johns Hopkins University, Baltimore, MD 21218}
 
 \author{Aaron Ewall-Wice}
 % \email{olivercromwell@uchicago.edu}
