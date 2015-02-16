@@ -1,0 +1,121 @@
+\documentclass[ucb,qb3,10pt,fullfrom]{ucletter}
+
+\usepackage{palatino}
+
+\name{John D. Chodera}
+\telephone{415.867.7384}
+\email{jchodera@berkeley.edu}
+%\department{Department of Chemistry}
+%\fromaddress{QB3 Institute}
+%260J Stanley Hall #3220\\
+%University of California\\
+%Berkeley, CA 94720-3220}
+%\mailcode{5447}
+\date{\today}
+
+%\documentclass[10pt]{letter}
+%\address{
+%John D. Chodera\\
+%QB3 Institute\\
+%260J Stanley Hall \#3220\\
+%University of California\\
+%Berkeley, CA 94720-3220, USA \\
+%phone: 415.867.7384\\
+%email: \href{mailto:jchodera@berkeley.edu}{jchodera@berkeley.edu}\\
+%\name{John D. Chodera}
+%}
+
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+
+\def\bs{$\backslash$}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{\small\textsc{John D. Chodera - Cover Letter - \thepage}}
+
+
+\signature{
+\resizebox{2.5in}{!}{\includegraphics{JDC-signature}} \\
+John D.~Chodera,\\corresponding author
+} 
+
+\usepackage{times}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+
+% We will be using PDF figures and generating PDF output.
+\pdfoutput=1
+\pdfcompresslevel=9
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsExtensions{.pdf}
+
+%        \addtolength{\oddsidemargin}{-.875in}
+%        \addtolength{\evensidemargin}{-.875in}
+%        \addtolength{\textwidth}{1.75in}
+%
+%        \addtolength{\topmargin}{-.875in}
+%        \addtolength{\textheight}{1.75in}
+%
+%\begin{document}
+%
+%\begin{letter}{To:\\MFPL Faculty Search Committee}
+%
+%\opening{Dear Search Committee,}
+
+
+\begin{document}
+%\small
+\begin{letter}{}
+\opening{Dear \emph{Nature Methods} Editors,}
+
+We are submitting the following manuscript for consideration for publication as an {\bf Article} in \emph{Nature Methods}:
+
+{\bf Bayesian hidden Markov model analysis of single-molecule force spectroscopy: Characterizing kinetics under measurement uncertainty}, by John D.~Chodera, Phillip Elms, Frank No\'{e}, Bettina Keller, Christian M.~Kaiser, Aaron Ewall-Wice,  Susan Marqusee, Carlos Bustamante, and Nina Singhal Hinrichs.
+
+In this manuscript, we describe a new technique for the analysis of single-molecule force spectroscopy experiments.
+Our approach utilizes a \emph{Bayesian} extension of hidden Markov models that allows information about kinetic and equilibrium properties to be extracted simultaneously from force or extension data collected in single-molecule optical or atomic force microscopy experiments.
+In addition to providing a way to reconstruct hidden state sequences (like standard hidden Markov models), our approach provides much more accurate estimates of characteristics of conformational states and transition rates than previous methods based on simple segmentation of the observed force range using force thresholds.
+Our approach also provides an excellent assessment of the \emph{confidence intervals} with which various kinetic and mechanical properties are known can be computed, allowing the experimenter to easily judge whether a particular mechanistic hypothesis is borne out by the data.
+We validate the method on synthetic data, and illustrate the approach applied to real experimental data by characterizing the folding kinetics under force of an RNA hairpin with three distinct conformational states using an optical trap.
+All of the Matlab code and data used here will be made freely available online as a companion to this work.
+
+We believe this work will be of high interest to the \emph{Nature Methods} readership.
+A number of articles on single-molecule force spectroscopy have appeared in previous issues---a testament to the interest in these tools:
+\begin{itemize}
+  \item Evanko D. \emph{Optimizing your optical tweezers.} Nature Methods 3:584, 2006.
+  \item Dufr\^{e}ne YF. \emph{Atomic force microscopy of membrane proteins separating two aqueous compartments.} Nature Methods 3:973, 2006.
+  \item Walter NG, Huang C-Y, Manzo AJ, and Sobhy MA. \emph{Do-it-yourself guide: how to use the modern single-molecule toolkit.} Nature Methods 5:475, 2008.
+  \item Neuman KC and Nagy A. \emph{Single-molecule force spectroscopy: optical tweezers, magnetic tweezers and atomic force microscopy.} Nature Methods 5:491, 2008.
+  \item Min TL, Mears PJ, Chubiz LM, Rao CV, Golding I, and Chemla YR. \emph{High-resolution, long-term characterization of bacterial motility using optical tweezers.} Nature Methods 6:831, 2009.
+  \item Lipfert J, Kerssemakers JWJ, Jager T, and Deller NH. \emph{Magnetic torque tweezers: measuring torsional stiffness in DNA and RecA-DNA filaments.} Nature Methods: 7:977, 2010.
+  \item Dufr\^{e}ne YF, Evans E, Engel A, Helenius J, Gaub HE, and M\"{u}ller DJ. \emph{Five challenges to bringing single-molecule force spectroscopy into living cells.} Nature Methods 8:123, 2011.
+\end{itemize}
+
+%We believe the primary audience for our manuscript will be similar to that of several recent \emph{Nature Methods} papers:
+%\begin{itemize}
+%  \item Ballard AJ and Jarzynski C. {\it Replica exchange with nonequilibrium switches.} PNAS 106:12224, 2009.
+%  \item Ytreberg FM and Zuckerman DM. {\it A black-box re-weighting analysis can correct flawed simulation data.} PNAS 105:7982, 2008.  
+%  \item Frenkel D. {\it Speed-up of Monte Carlo simulations by sampling rejected states.} PNAS 101:17571, 2004.  
+%\end{itemize}
+
+\eject
+
+Appropriate reviewers of this work include the following scientists working in the field of single-molecule force spectroscopy:
+\begin{itemize}
+  \item Yann R.~Chemla (UIUC) - \url{ychemla@illinois.edu}
+  \item Matthias Rief (TU Munich) - \url{mrief@ph.tum.de}
+  \item Gerhard Hummer (NIH) - \url{gerhard.hummer@nih.gov}
+  \item Steven M Block (Stanford) - \url{sblock@stanford.edu}
+  \item Felix Ritort (University of Barcelona) - \url{ritort@ffn.ub.es}  
+  \item Michael Woodside (University of Alberta) - \url{michael.woodside@nrc-cnrc.gc.ca}
+  \item Robert Best (University of Cambridge) - \url{rbb24@cam.ac.uk}
+  \item Jane Clarke (Cambridge) - \url{jc162@cam.ac.uk}
+  \item Olga Dudko (UCSD) - \url{dudko@physics.ucsd.edu}
+  \item Taekjip Ha (UIUC) - \url{taekjipha@physics.illinois.edu}
+  \item Alexander Dunn (Stanford) - \url{alex.dunn@stanford.edu}
+\end{itemize}
+
+\closing{Kind regards,}
+\end{letter}
+\end{document}

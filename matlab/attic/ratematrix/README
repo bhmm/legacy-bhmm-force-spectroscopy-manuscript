@@ -1,0 +1,28 @@
+Matlab functions for sampling transition matrices that satisfy detailed balance and give 
+valid rate matrices, using Gerhard Hummer's prescription for MCMC on a parameterization of valid rate matrices.
+
+Transition matrices satisfy relation
+
+Tij = expm(Kij * tau)
+
+where Tij(i,j) is a row-stochastic transition matrix, Kij is a rate matrix where Kij(i,j) > 0 for i ~= j, and sum(Kij(i,:)) = 0 for any i.
+
+Tij and Kij both satisfy detailed balance.
+
+Tij(i,j) represents the probability of observing the system in state j at time tau given it was initial in state i at time 0.
+
+MANIFEST
+
+test_transition_matrix_update.m - an example illustrating generation of maximum-likelihood transition matrix guess and subsequent MCMC sampling
+generate_transition_matrix_guess.m - generate an initial transition matrix that satisfies the above constraints
+hummer_rate_matrix_update.m - update the rate matrix using Hummer's MCMC approach
+pack_vector.m - helper routine
+unpack_vector.m - helper routine 
+
+
+
+TODO
+
+Write Matlab-readable index file for this directory.
+
+
