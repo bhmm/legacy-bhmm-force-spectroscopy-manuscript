@@ -55,6 +55,9 @@
 %\newcommand{\bfm}[1]{{\bf #1}}
 \newcommand{\expect}[1]{\left \langle #1 \right \rangle}                % <.> for denoting expectations over realizations of an experiment or thermal averages
 
+% Probability representation
+\renewcommand{\Pr}{\mathrm{P}}
+
 % vectors
 %\newcommand{\x}{\bfv{x}}
 %\newcommand{\y}{\bfv{y}}
@@ -275,9 +278,9 @@ The hidden Markov model presumes the observed data $\bfm{O} \equiv \{o^{}_t\}$ w
 %s^{}_0 &\sim& \bfv{\rho} \nonumber \\
 %s^{}_t &\sim& T_{s^{}_{t-1} \cdot} \nonumber \\
 %o^{}_t &\sim& \varphi(\cdot \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-process}
-\mathbb{P}(s^{}_0) &=& \rho^{}_{s^{}_0} \nonumber \\
-\mathbb{P}(s^{}_t \mid s^{}_{t-1}, \bfm{T}) &=& T_{s^{}_{t-1} s^{}_{t}} , \:\: t \ge 1 \nonumber \\
-\mathbb{P}(o^{}_t \mid s^{}_t, \bfm{e}_{s^{}_{t}}) &=& \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-process} .
+\Pr(s^{}_0) &=& \rho^{}_{s^{}_0} \nonumber \\
+\Pr(s^{}_t \mid s^{}_{t-1}, \bfm{T}) &=& T_{s^{}_{t-1} s^{}_{t}} , \:\: t \ge 1 \nonumber \\
+\Pr(o^{}_t \mid s^{}_t, \bfm{e}_{s^{}_{t}}) &=& \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-process} .
 \end{eqnarray}
 In diagrammatic form, the observed state data $\{o_t\}$ and corresponding hidden state history $\{s_t\}$ can be represented 
 \begin{eqnarray}
@@ -307,27 +310,27 @@ Other choices of observable distribution can easily be substituted in a modular 
 
 Given the HMM process specified in Eq.~\ref{equation:hmm-process}, the probability of observing data $\bfm{O}$ given the model parameters $\bfm{\Theta}$ is then,
 \begin{eqnarray}
-P(\bfm{O} \mid \bfm{\Theta}) &=& \sum_{\bfm{S}}  \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-likelihood} ,
+\Pr(\bfm{O} \mid \bfm{\Theta}) &=& \sum_{\bfm{S}}  \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-likelihood} ,
 \end{eqnarray}
 where the sum over hidden state histories $\bfm{S}$ is shorthand for
 \begin{eqnarray}
 \sum_{\bfm{S}} \equiv \sum_{s^{}_{0}=1}^M \sum_{s^{}_{1}=1}^M \cdots \sum_{s^{}_{L^{}}=1}^M .
 \end{eqnarray}
-If multiple independent traces $\{o_t\}$ are available, the probability $P(\bfm{O} \mid \bfm{\Theta})$ is simply the product of Eq.~\ref{equation:hmm-likelihood} for the independent traces.
+If multiple independent traces $\{o_t\}$ are available, the probability $\Pr(\bfm{O} \mid \bfm{\Theta})$ is simply the product of Eq.~\ref{equation:hmm-likelihood} for the independent traces.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Maximum likelihood hidden Markov model (MLHMM)}
 
 The standard approach to construct an HMM from observed data is to compute the maximum likelihood estimator (MLE) for the model parameters $\bfm{\Theta} \equiv \{\bfm{T}, \bfm{E}\}$, which maximize the probability of the observed data $\bfm{O}$ given the model,
 \begin{eqnarray}
-\hat{\bfm{\Theta}} &=& \arg\max_\bfm{\Theta} P(\bfm{O} \mid \bfm{\Theta}) ,
+\hat{\bfm{\Theta}} &=& \arg\max_\bfm{\Theta} \Pr(\bfm{O} \mid \bfm{\Theta}) ,
 \end{eqnarray}
 yielding MLE estimates of transition matrix $\hat{\bfm{T}}$ and state emission parameters $\hat{\bfm{E}}$.
 Typically, determination of the model parameters $\bfm{\Theta}$ is carried out using the Baum-Welch algorithm~\cite{baum:1970:ann-math-statist:baum-welch}.
 
 Once the MLE parameters $\hat{\bfm{\Theta}}$ are determined, the most likely hidden state history that produced the observations $\bfm{O}$ can be determined using these parameters:
 \begin{eqnarray}
-\hat{\bfm{S}} &=& \arg\max_\bfm{S} P(\bfm{S} \mid \bfm{O}, \hat{\bfm{\Theta}}) .
+\hat{\bfm{S}} &=& \arg\max_\bfm{S} \Pr(\bfm{S} \mid \bfm{O}, \hat{\bfm{\Theta}}) .
 \end{eqnarray}
 This is typically carried out using the Viterbi algorithm~\cite{viterbi:1967:IEEE-trans-info-theory:viterbi-algorithm}, a classic example of dynamic programming.
 
@@ -339,29 +342,29 @@ This is typically carried out using the Viterbi algorithm~\cite{viterbi:1967:IEE
 Instead of simply determining the model that maximizes the likelihood of observing the data $\bfm{O}$ given the model parameters $\bfm{\Theta}$, {\color{magenta} we here propose to sample to full posterior distribution of model parameters given the observed data. 
 Towards this end, we emply Bayes' theorem to compute the posterior distribution:}
 \begin{eqnarray}
-P(\bfm{\Theta} \mid \bfm{O}) &\propto& P(\bfm{O} \mid \bfm{\Theta}) P(\bfm{\Theta}) \label{equation:bayes-theorem}.
+\Pr(\bfm{\Theta} \mid \bfm{O}) &\propto& \Pr(\bfm{O} \mid \bfm{\Theta}) \Pr(\bfm{\Theta}) \label{equation:bayes-theorem}.
 \end{eqnarray}
-Here, $P(\bfm{\Theta})$ denotes a prior distribution that encodes any \emph{a priori} information we may have about the model parameters $\bfm{\Theta}$.
+Here, $\Pr(\bfm{\Theta})$ denotes a prior distribution that encodes any \emph{a priori} information we may have about the model parameters $\bfm{\Theta}$.
 This prior information might include, for example, physical constraints (such as ensuring the transition matrix satisfies detailed balance) or prior rounds of inference from other independent experiments.
 
 Making use of the likelihood (Eq.~\ref{equation:hmm-likelihood}), the model posterior is then given by,
 \begin{eqnarray}
-P(\bfm{\Theta} \mid \bfm{O}) &\propto& P(\bfm{\Theta}) \sum_{\bfm{S}}\rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}})  \label{equation:full-posterior} .
+\Pr(\bfm{\Theta} \mid \bfm{O}) &\propto& \Pr(\bfm{\Theta}) \sum_{\bfm{S}}\rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}})  \label{equation:full-posterior} .
 \end{eqnarray}
 Drawing samples of $\bfm{\Theta}$ from this distribution will, in principle, allow the confidence with which individual parameters and combinations thereof are known, given the data (and subject to the validity of the model of Eq.~\ref{equation:hmm-process} in correctly representing the process by which the observed data is generated).
-While the posterior $P(\bfm{\Theta}|\bfm{O})$ is complex, we could in principle use a Markov chain Monte Carlo (MCMC) approach~\cite{jun-s-liu:mcmc} to sample it.
+While the posterior $\Pr(\bfm{\Theta}|\bfm{O})$ is complex, we could in principle use a Markov chain Monte Carlo (MCMC) approach~\cite{jun-s-liu:mcmc} to sample it.
 In its current form, however, this would be extremely expensive due to the sum over all hidden state histories $\bfm{S}$ appearing in ratios involving Eq.~\ref{equation:full-posterior}.
 Instead, we introduce the hidden state histories $\bfm{S}$ as an auxiliary variable, sampling from the augmented posterior,
 \begin{eqnarray}
-P(\bfm{\Theta}, \bfm{S} \mid \bfm{O}) &\propto& \left[ \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \right] P(\bfm{\Theta}) . \nonumber \\\label{equation:augmented-posterior} 
+\Pr(\bfm{\Theta}, \bfm{S} \mid \bfm{O}) &\propto& \left[ \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \right] \Pr(\bfm{\Theta}) . \nonumber \\\label{equation:augmented-posterior} 
 \end{eqnarray}
 which makes it much less costly to compute the ratios required for MCMC on the augmented $(\bfm{\Theta},\bfm{S})$ parameter space.
 
-If we presume the prior is separable, such that $P(\bfm{\Theta}) \equiv P(\bfm{T}) P(\bfm{E})$, we can sample from the augmented posterior (Eq.~\ref{equation:augmented-posterior}) using the framework of Gibbs sampling~\cite{jun-s-liu:mcmc}, in which the augmented model parameters are updated by cycles of sampling from conditional distributions,
+If we presume the prior is separable, such that $\Pr(\bfm{\Theta}) \equiv \Pr(\bfm{T}) \Pr(\bfm{E})$, we can sample from the augmented posterior (Eq.~\ref{equation:augmented-posterior}) using the framework of Gibbs sampling~\cite{jun-s-liu:mcmc}, in which the augmented model parameters are updated by cycles of sampling from conditional distributions,
 \begin{eqnarray}
-\bfm{S}' &\sim& P(\bfm{S} \mid \bfm{T}, \bfm{E}, \bfm{O}) \propto \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \nonumber \\
-\bfm{T}' &\sim& P(\bfm{T} \mid \bfm{E}, \bfm{S}', \bfm{O}) = P(\bfm{T} \mid \bfm{S}') \propto P(\bfm{T}) \prod_{t=1}^{L^{}} T_{{s'}^{}_{t-1} {s'}^{}_{t}} \label{equation:conditional-gibbs} \\
-\bfm{E}' &\sim& P(\bfm{E} \mid \bfm{S}', \bfm{T}', \bfm{O}) = P(\bfm{E} \mid \bfm{S}', \bfm{O}) \propto P(\bfm{E}) \prod_{t=0}^{L^{}} \varphi(o^{}_{t} \mid \bfm{e}_{{s'}^{}_{t}}) \nonumber .
+\bfm{S}' &\sim& \Pr(\bfm{S} \mid \bfm{T}, \bfm{E}, \bfm{O}) \propto \rho_{s^{}_{0}} \varphi(o^{}_{0} \mid \bfm{e}_{s^{}_{0}}) \prod_{t=1}^{L^{}} T_{s^{}_{t-1} s^{}_{t}} \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \nonumber \\
+\bfm{T}' &\sim& \Pr(\bfm{T} \mid \bfm{E}, \bfm{S}', \bfm{O}) = \Pr(\bfm{T} \mid \bfm{S}') \propto \Pr(\bfm{T}) \prod_{t=1}^{L^{}} T_{{s'}^{}_{t-1} {s'}^{}_{t}} \label{equation:conditional-gibbs} \\
+\bfm{E}' &\sim& \Pr(\bfm{E} \mid \bfm{S}', \bfm{T}', \bfm{O}) = \Pr(\bfm{E} \mid \bfm{S}', \bfm{O}) \propto \Pr(\bfm{E}) \prod_{t=0}^{L^{}} \varphi(o^{}_{t} \mid \bfm{e}_{{s'}^{}_{t}}) \nonumber .
 \end{eqnarray}
 The equalities on the second and third lines reflect the conditional independence of the hidden Markov model defined by Eq.~\ref{equation:hmm-process}.
 When only the model parameters $\bfm{\Theta} \equiv \{ \bfm{T}, \bfm{E} \}$ or the hidden state histories $\bfm{S}$ are of interest, we can simply marginalize out the uninteresting variables by sampling from the augmented joint posterior for $\{\bfm{T}, \bfm{E}, \bfm{S}\}$ and examine only the variables of interest.
@@ -373,7 +376,7 @@ In the applications presented here, we employ a Gaussian observable distribution
 \end{eqnarray}
 where $\mu$ is the mean force or extension characterizing a particular state, and $\sigma$ is the standard deviation or width of forces or extensions corresponding to that state.
 Other choices for the observable distribution model $\phi(o | \mathbf{e})$ can easily be substituted should they be more appropriate for analyzing particular classes of experiments, and only require substituting an appropriate parameter update step.
-We note that marginal posterior distributions of each mean $P(\mu_i | \bfm{O})$ reflect the statistical uncertainty in how well the mean force or position is determined, and need not correspond to the standard deviation $\sigma_i$, which may be much broader (or narrower, depending on the situation).
+We note that marginal posterior distributions of each mean $\Pr(\mu_i | \bfm{O})$ reflect the statistical uncertainty in how well the mean force or position is determined, and need not correspond to the standard deviation $\sigma_i$, which may be much broader (or narrower, depending on the situation).
 
 {\color{red} Detailed descriptions of the algorithms used to fit the maximum likelihood hidden Markov model (MLHMM) and sample from the posterior distribution of the Bayesian hidden Markov model (BHMM) are given in the Appendix.}
 
@@ -438,10 +441,10 @@ state std dev force (pN) & $\sigma_{1}$ & $1.000$ & $1.037_{\:0.951}^{\:1.134}$ 
 \label{section:model-system}
 
 To verify that our BHMM posterior sampling scheme reflects the true uncertainty in the model parameters, we can test that the scheme produces the expected estimates for synthetic data generated from a model with known parameters $\bfm{\Theta}^*$. 
-Given observed data $\bfm{O}$ generated from $P(\bfm{O} \mid \bfm{\Theta}^*)$, sampling from the posterior $P(\bfm{\Theta} \mid \bfm{O})$ using the scheme described in \color{blue} \emph{Sampling from the posterior of the BHMM} \color{black} will provide us with confidence intervals $[\theta_\mathrm{low}, \theta_\mathrm{high}]$ for a specified confidence interval $\alpha \in [0,1]$.
+Given observed data $\bfm{O}$ generated from $\Pr(\bfm{O} \mid \bfm{\Theta}^*)$, sampling from the posterior $\Pr(\bfm{\Theta} \mid \bfm{O})$ using the scheme described in \color{blue} \emph{Sampling from the posterior of the BHMM} \color{black} will provide us with confidence intervals $[\theta_\mathrm{low}, \theta_\mathrm{high}]$ for a specified confidence interval $\alpha \in [0,1]$.
 If these computed confidence intervals are accurate, we should find that the true model parameter $\theta^*$ lies in the computed confidence interval $[\theta^{(\alpha)}_\mathrm{low}, \theta^{(\alpha)}_\mathrm{high}]$ with probability $\alpha$.
 A 95\% confidence interval ($\alpha = 0.95$), for example, should contain the BHMM estimate in 95\% of such trials.
-This can be tested by generating synthetic observed data $\bfm{O}$ from $P(\bfm{O} \mid \bfm{\Theta}^*)$ and verifying that we find $\theta^* \in [\theta^{(\alpha)}_\mathrm{low}, \theta^{(\alpha)}_\mathrm{high}]$ in a fraction $\alpha$ of these synthetic experiments.
+This can be tested by generating synthetic observed data $\bfm{O}$ from $\Pr(\bfm{O} \mid \bfm{\Theta}^*)$ and verifying that we find $\theta^* \in [\theta^{(\alpha)}_\mathrm{low}, \theta^{(\alpha)}_\mathrm{high}]$ in a fraction $\alpha$ of these synthetic experiments.
 
 \color{red}
 As an illustration of the computation of confidence intervals, we simulated a three-state system intended to mimic a protein with (1) a highly-compliance, low-force unfolded state, (2) a moderately compliant low-population intermediate at intermediate force, and (3) a low-compliance, high-force folded state.
@@ -455,7 +458,7 @@ The results, shown in Table~\ref{table:synthetic-confidence-intervals}, show tha
 In contrast, a model created from simply segmenting the observed forces into disjoint region and assigning state membership based on the force value alone estimates model parameters with significant bias even for 1 000 000 observations (see \emph{Supporting Information}).
 \color{black}
 
-As a more rigorous test, we sampled 50 random models from the prior $P(\bfm{\Theta})$ with two to six states, generated a 10 000 observation synthetic trajectory for each, and accumulated statistics on the observed fraction of time the true model parameters were within the BHMM confidence intervals for various values of the confidence interval width $\alpha$.
+As a more rigorous test, we sampled 50 random models from the prior $\Pr(\bfm{\Theta})$ with two to six states, generated a 10 000 observation synthetic trajectory for each, and accumulated statistics on the observed fraction of time the true model parameters were within the BHMM confidence intervals for various values of the confidence interval width $\alpha$.
 The results of this test are depicted in \emph{Supplementary Figure 1}. %~\ref{figure:validation-confidence-intervals}.
 We expect that the plot traces the diagonal if the observed and expected confidence intervals are identical; an overestimate of the confidence interval will be above the diagonal, and an underestimate will fall below it.
 Because only a finite number of independent replicates of the experiment are conducted, there is some associated uncertainty with the observed confidence intervals.
@@ -634,7 +637,7 @@ This work was supported in part by a grant from the NSF (SM).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Generating an initial model}
 
-To initialize either computation of the MLHMM or sampling from the posterior for the BHMM, an initial model that respects any constraints imposed in the model prior $P(\bfm{\Theta})$ must be selected.
+To initialize either computation of the MLHMM or sampling from the posterior for the BHMM, an initial model that respects any constraints imposed in the model prior $\Pr(\bfm{\Theta})$ must be selected.
 Here, we employ a Gaussian observable distribution model for $\varphi(o \mid \bfm{e})$ (Eq.~\ref{equation:gaussian-observable}) and enforce that the transition matrix $\bfm{T}$ satisfy detailed balance.
 
 {\color{blue}[JDC: We need to revise this section to discuss the new randomized multi-start initialization.]}
@@ -645,7 +648,7 @@ Here, we employ a Gaussian observable distribution model for $\varphi(o \mid \bf
 
 We first initialize the observed distributions of each state by fitting a Gaussian mixture model with $M$ states to the pooled observed data $\bfm{O}$, ignoring temporal information:
 \begin{eqnarray}
-P(\bfm{O} \mid \bfv{\pi}, \bfm{E}) &=& \prod_{t=0}^{L^{}} \sum_{m=1}^M \pi_m \varphi(o^{}_{t} \mid \mu_m, \sigma^2_m) ,
+\Pr(\bfm{O} \mid \bfv{\pi}, \bfm{E}) &=& \prod_{t=0}^{L^{}} \sum_{m=1}^M \pi_m \varphi(o^{}_{t} \mid \mu_m, \sigma^2_m) ,
 \label{equation:gaussian-mixture-likelihood}
 \end{eqnarray}
 where the state observable emission probability vector $\bfm{E} \equiv \{\bfm{e}_1,\ldots,\bfm{e}_M\}$ and $\bfm{e}_m \equiv \{\mu_m, \sigma_m^2\}$ with $\mu_m$ denoting the observable mean and $\sigma_m^2$ the variance for state $m$ for the Gaussian mixture model.
@@ -684,7 +687,7 @@ A symmetric $M \times M$ matrix $\bfm{X} \equiv (x_{ij})$ is initialized by
 x_{ij} = x_{ji} &=& c_{ij} + c_{ji} .
 \end{eqnarray}
 \color{red}
-The iterative procedure described in Algorithm 1 of \cite{noe:jcp:2011:msm-review} is then applied to update the transition matrix in a manner that preserves the detailed balance constraint while maximizing the likelihood function $P(\bfm{T} | \bfm{S})$.
+The iterative procedure described in Algorithm 1 of \cite{noe:jcp:2011:msm-review} is then applied to update the transition matrix in a manner that preserves the detailed balance constraint while maximizing the likelihood function $\Pr(\bfm{T} | \bfm{S})$.
 This algorithm proceeds as follows.
 \color{black}
 
@@ -720,9 +723,9 @@ This is an iterative procedure, where the model parameters are subsequently refi
 scheme:
 \color{magenta}
 \begin{eqnarray}
-\mathbf{S'} &=& \arg \max_S P(S \mid \mathbf{T}, \mathbf{E}, \mathbf{O})\\
-\mathbf{T'} &=& \arg \max_T P(T \mid \mathbf{S}, \mathbf{O})\\
-\mathbf{E'} &=& \arg \max_E P(E \mid \mathbf{S}, \mathbf{O})
+\mathbf{S'} &=& \arg \max_S \Pr(S \mid \mathbf{T}, \mathbf{E}, \mathbf{O})\\
+\mathbf{T'} &=& \arg \max_T \Pr(T \mid \mathbf{S}, \mathbf{O})\\
+\mathbf{E'} &=& \arg \max_E \Pr(E \mid \mathbf{S}, \mathbf{O})
 \end{eqnarray}
 \color{black}
 The initial HMM is usually quick to compute, and can give the experimenter a rough idea of the model parameters, as well as providing a useful starting point for sampling models from the Bayesian posterior.
@@ -788,9 +791,9 @@ as well as a reverse reconstruction component to compute the most likely state s
 Sampling from the posterior of the BHMM (Eq.~\ref{equation:full-posterior}) proceeds by rounds of Gibbs sampling, where each round consists of an update of the augmented model parameters $\{\bfm{T}, \bfm{E}, \bfm{S}\}$ by sampling
 \begin{eqnarray}
 \begin{array}{lcl}
-\bfm{S}' \mid \bfm{T}, \bfm{E}, \bfm{O} &\sim& P(\bfm{S}' \mid \bfm{T}, \bfm{E}, \bfm{O}) \nonumber \\
-\bfm{T}' \mid \bfm{S}' &\sim& P(\bfm{T}' \mid \bfm{S}') \nonumber \\
-\bfm{E}' \mid \bfm{S}', \bfm{O} &\sim& P(\bfm{E}' \mid \bfm{S}', \bfm{O}) 
+\bfm{S}' \mid \bfm{T}, \bfm{E}, \bfm{O} &\sim& \Pr(\bfm{S}' \mid \bfm{T}, \bfm{E}, \bfm{O}) \nonumber \\
+\bfm{T}' \mid \bfm{S}' &\sim& \Pr(\bfm{T}' \mid \bfm{S}') \nonumber \\
+\bfm{E}' \mid \bfm{S}', \bfm{O} &\sim& \Pr(\bfm{E}' \mid \bfm{S}', \bfm{O}) 
 \end{array}
 \end{eqnarray}
 where the conditional probabilities are given by Eq.~\ref{equation:conditional-gibbs}.  
@@ -799,7 +802,7 @@ where the conditional probabilities are given by Eq.~\ref{equation:conditional-g
 \subsubsection{Updating the hidden state sequences}
 
 We use a modified form of the Viterbi process to generate an independent sample of the hidden state history $\bfm{S}$ given the transition probabilities $\bfm{T}$, state observable distribution parameters $\bfm{E}$, and observed data $\bfm{O}$.
-Like the Viterbi scheme, a forward recursion is applied to each observation trace $\bfm{o}^{}$, but instead of computing the most likely state history on the reverse pass, a new hidden state history $\bfm{S}$ is drawn from the distribution $P(\bfm{S} \mid \bfm{O}, \bfm{T}, \bfm{E})$.
+Like the Viterbi scheme, a forward recursion is applied to each observation trace $\bfm{o}^{}$, but instead of computing the most likely state history on the reverse pass, a new hidden state history $\bfm{S}$ is drawn from the distribution $\Pr(\bfm{S} \mid \bfm{O}, \bfm{T}, \bfm{E})$.
 The forward recursion uses the same forward algorithm as used in Baum-Welch~\cite{baum:1970:ann-math-statist:baum-welch}, 
 \begin{eqnarray}
 \alpha_{tj} &=& \begin{cases}
@@ -807,21 +810,21 @@ The forward recursion uses the same forward algorithm as used in Baum-Welch~\cit
 \varphi(o_t \mid \bfm{e}_j) \sum_{i=1}^M \alpha_{(t-1)i} T_{ij} & t = 1,\ldots,L
 \end{cases}
 \end{eqnarray}
-In the reverse recursion, we now sample a state sequence by sampling each hidden state from the conditional distribution $s_t \sim P(s_t \mid s_{t+1}, \ldots, s_L)$ starting from $t = L$ and proceeding down to $t = 0$, where the conditional distribution is given by,
+In the reverse recursion, we now sample a state sequence by sampling each hidden state from the conditional distribution $s_t \sim \Pr(s_t \mid s_{t+1}, \ldots, s_L)$ starting from $t = L$ and proceeding down to $t = 0$, where the conditional distribution is given by,
 \begin{eqnarray}
-\lefteqn{P(s_t = i \mid s_{t+1}, \ldots, s_L)} \\
+\lefteqn{\Pr(s_t = i \mid s_{t+1}, \ldots, s_L)} \\
 &\propto& \begin{cases}
 \alpha_{t i} / \sum_{j=1}^M \alpha_{t j} & t = L \\
 \alpha_{t i} T_{i s_{t+1}} / \sum_{j=1}^M \alpha_{t j} T_{j s_{t+1}} & t = (L-1),\ldots,0
 \end{cases} \nonumber
 \end{eqnarray} 
-It is straightforward to show the result of these sampling steps reconstitutes the probability distribution $P(\bfm{S} | \bfm{T}, \bfm{E}, \bfm{O})$ (see \emph{Supplementary Material: Proof of state history sampling scheme}).
+It is straightforward to show the result of these sampling steps reconstitutes the probability distribution $\Pr(\bfm{S} | \bfm{T}, \bfm{E}, \bfm{O})$ (see \emph{Supplementary Material: Proof of state history sampling scheme}).
 
 %%%%%%%%%%%
 \subsubsection{Updating the transition probabilities}
 
-%If no detailed balance constraint is used and the prior $P(\bfm{T})$ is Dirichlet in each row of the transition matrix $\bfm{T}$, it is possible to generate an independent sample of the transition matrix from the conditional distribution $P(\bfm{T}' \mid \bfm{S}')$ by sampling each row of the transition matrix from the conjugate Dirichlet posterior using the transition counts from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.
-{\color{red} If we assume each row of the transition matrix $\bfm{T}$ is independent with Dirichlet prior $P(\bfm{T})$, then it is possible to sample from the transition matrix posterior Dirichlet distribution $P(\bfm{T}' \mid \bfm{S}')$, given the transition counts calculated from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.}
+%If no detailed balance constraint is used and the prior $\Pr(\bfm{T})$ is Dirichlet in each row of the transition matrix $\bfm{T}$, it is possible to generate an independent sample of the transition matrix from the conditional distribution $\Pr(\bfm{T}' \mid \bfm{S}')$ by sampling each row of the transition matrix from the conjugate Dirichlet posterior using the transition counts from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.
+{\color{red} If we assume each row of the transition matrix $\bfm{T}$ is independent with Dirichlet prior $\Pr(\bfm{T})$, then it is possible to sample from the transition matrix posterior Dirichlet distribution $\Pr(\bfm{T}' \mid \bfm{S}')$, given the transition counts calculated from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.}
 However, because physical systems in the absence of energy input through an external driving force should satisfy detailed balance, we make use of this constraint in updating our transition probabilities, since this has been demonstrated to substantially reduce parameter uncertainty in the data-limited regime~\cite{noe:jcp:2008:transition-matrix-sampling}.
 
 The transition matrix is updated using the reversible transition matrix sampling scheme of No\'{e}~\cite{noe:jcp:2008:transition-matrix-sampling,chodera-noe:jcp:2011:observable-sampling}.
@@ -830,7 +833,7 @@ Here, an adjusted count matrix $\bfm{C} \equiv (c_{ij})$ is computed using the u
 c_{ij} &=& b_{ij} +\sum_{t=1}^{L} \delta_{is_{t-1}} \delta_{js_{t}} ,
 \end{eqnarray}
 where the Kronecker $\delta_{ij} = 1$ if $i = j$ and zero otherwise, and $\bfm{B} \equiv (b_{ij})$ is a matrix of prior pseudocounts, which we take to be zero following the work of No\'{e} et al.~\cite{noe:pnas:2009:ww-domain}.
-Using the adjusted count matrix $\bfm{C}$, a Metropolis-Hastings Monte Carlo procedure~\cite{metropolis-hastings} is used to update the matrix and produce a new sample from $P(\bfm{T}' \mid \bfm{S}')$.
+Using the adjusted count matrix $\bfm{C}$, a Metropolis-Hastings Monte Carlo procedure~\cite{metropolis-hastings} is used to update the matrix and produce a new sample from $\Pr(\bfm{T}' \mid \bfm{S}')$.
 Two move types are attempted, selected with equal probability, and 1000 trial moves are attempted to generate a new sample $\bfm{T}'$ that is approximately uncorrelated from the previous $\bfm{T}$.
 Prior to starting the Monte Carlo procedure, the vector of equilibrium probabilities for all states $\bfv{\pi}$ is computed according to 
 \begin{eqnarray}
@@ -880,16 +883,16 @@ To avoid this, $\bfv{\pi}$ is recomputed from the current sample of the transiti
 %%%%%%%%%%%
 \subsubsection{Updating the observable distribution parameters}
 
-Following the update of the transition matrix $\bfm{T}$, the observable distribution parameters $\bfm{E}$ are updated by sampling $\bfm{E}$ from the conditional probability $P(\bfm{E}' \mid \bfm{S}', \bfm{O})$.
+Following the update of the transition matrix $\bfm{T}$, the observable distribution parameters $\bfm{E}$ are updated by sampling $\bfm{E}$ from the conditional probability $\Pr(\bfm{E}' \mid \bfm{S}', \bfm{O})$.
 The conditional probability for the observable distribution parameters for state $m$, denoted $\bfm{e}_m$, is given in terms of the output model $\varphi(o \mid \bfm{e})$ by Bayes' theorem,
 \begin{eqnarray}
-P(\bfm{E} \mid \bfm{O}, \bfm{S}) &=& \left[\prod_{t=0}^{L^{}} \varphi(o_{t} \mid \bfm{e}_{s^{}_{t}}) \right] P(\bfm{E}) \label{equation:conditional-emission-probability} .
+\Pr(\bfm{E} \mid \bfm{O}, \bfm{S}) &=& \left[\prod_{t=0}^{L^{}} \varphi(o_{t} \mid \bfm{e}_{s^{}_{t}}) \right] \Pr(\bfm{E}) \label{equation:conditional-emission-probability} .
 \end{eqnarray}
 
-An important choice must be made with regards to the prior, $P(\bfm{E})$.
+An important choice must be made with regards to the prior, $\Pr(\bfm{E})$.
 If the prior is chosen to be composed of independent priors for each state, as in
 \begin{eqnarray}
-P(\bfm{E}) &=& \prod_{m=1}^M P(\bfm{e}_m) \label{equation:separable-emission-prior} ,
+\Pr(\bfm{E}) &=& \prod_{m=1}^M \Pr(\bfm{e}_m) \label{equation:separable-emission-prior} ,
 \end{eqnarray}
 then the full BHMM posterior (Eq.~\ref{equation:full-posterior}) will be invariant under any permutation of the states.
 This behavior might be undesirable, as the states may switch labels during the posterior sampling procedure; this will require any analysis of the models sampled from the posterior to account for the possible permutation symmetry in the states.
@@ -903,34 +906,34 @@ Here, we make the choice that the prior be separable (Eq.~\ref{equation:separabl
 For each state $m$, collect all the observations $o^{}_{t}$ whose updated hidden state labels ${s^{}_{t}}' = m$ into a single dataset $\bfm{o} \equiv \{o_n\}_{n=1}^{N_m}$, where $N_m$ is the total number of times state $m$ is visited, for the purposes of this update procedure.
 Then, the observable parameters $\bfm{e}$ for this state are given by
 \begin{eqnarray}
-P(\bfm{e} \mid \bfm{o}) &=& P(\bfm{o} \mid \bfm{e}) P(\bfm{e}) = \left[ \prod_{n=1}^{N_m} \varphi(o_n \mid \bfm{e}) \right] P(\bfm{e}) .
+\Pr(\bfm{e} \mid \bfm{o}) &=& \Pr(\bfm{o} \mid \bfm{e}) \Pr(\bfm{e}) = \left[ \prod_{n=1}^{N_m} \varphi(o_n \mid \bfm{e}) \right] \Pr(\bfm{e}) .
 \end{eqnarray}
 
 In the application presented here, we use a Gaussian output model (Eq.~\ref{equation:gaussian-observable}) 
-for the state observable distributions $P(o \mid \bfm{e})$, where $\bfm{e} \equiv \{\mu, \sigma^2\}$, with $\mu$ the state mean observable and $\sigma^2$ the variance (which will include both the distribution of the observable characterizing the state and any broadening from measurement noise).
-Other models (including multidimensional or multimodal observation models) are possible, and require replacing only the observation model $\varphi(o \mid \bfm{e})$ and corresponding prior $P(\bfm{e})$.
+for the state observable distributions $\Pr(o \mid \bfm{e})$, where $\bfm{e} \equiv \{\mu, \sigma^2\}$, with $\mu$ the state mean observable and $\sigma^2$ the variance (which will include both the distribution of the observable characterizing the state and any broadening from measurement noise).
+Other models (including multidimensional or multimodal observation models) are possible, and require replacing only the observation model $\varphi(o \mid \bfm{e})$ and corresponding prior $\Pr(\bfm{e})$.
 
 We use the (improper) Jeffreys prior~\cite{jeffreys:proc-royal-soc-a:1946:jeffreys-prior} which has the information-theoretic interpretation as the prior that maximizes the information content of the data~\cite{goyal:bayesian-inference-book:2005:jeffreys-prior}, (suppressing the state index subscript $m$),
 \begin{eqnarray}
-P(\bfm{e}) &\propto& \sigma^{-1} \label{equation:emission-parameter-prior} ,
+\Pr(\bfm{e}) &\propto& \sigma^{-1} \label{equation:emission-parameter-prior} ,
 \end{eqnarray}
 which produces the posterior
 \begin{eqnarray}
-P(\bfm{e} \mid \bfm{o}) &\propto& \sigma^{-(N+1)} \exp\left[-\frac{1}{2 \sigma^2} \sum_{n=1}^N (o_n - \mu)^2 \right] ,
+\Pr(\bfm{e} \mid \bfm{o}) &\propto& \sigma^{-(N+1)} \exp\left[-\frac{1}{2 \sigma^2} \sum_{n=1}^N (o_n - \mu)^2 \right] ,
 \end{eqnarray}
 where we remind the reader that here and in the remainder of this section, the symbols $\bfm{e}$, $\bfm{o}$, $\sigma$, $\mu$, and $N$ refer to $\bfm{e}_m$, $\bfm{o}_m$, $\sigma_m$, $\mu_m$, and $N_m$, respectively.
 
 Updating $\{\mu, \sigma^2\}$ also proceeds by a Gibbs sampling scheme, alternately updating $\mu$ and $\sigma$, as earlier described in Ref.~\citep{chodera-noe:jcp:2011:observable-sampling},
 \begin{eqnarray}
-\mu &\sim& P(\mu \mid \sigma^2, \bfm{o}) \nonumber \\
-\sigma^2 &\sim& P(\sigma^2 \mid \mu, \bfm{o})
+\mu &\sim& \Pr(\mu \mid \sigma^2, \bfm{o}) \nonumber \\
+\sigma^2 &\sim& \Pr(\sigma^2 \mid \mu, \bfm{o})
 \end{eqnarray}
 
 The conditional distribution of the mean $\mu$ is then given by
 \begin{eqnarray}
-%P(\mu \mid \sigma^2, \bfm{o}) &\equiv& \frac{P(\mu, \sigma^2 \mid \bfm{o})}{\int d\mu \, P(\mu, \sigma^2 \mid \bfm{o})} \nonumber \\
+%\Pr(\mu \mid \sigma^2, \bfm{o}) &\equiv& \frac{\Pr(\mu, \sigma^2 \mid \bfm{o})}{\int d\mu \, \Pr(\mu, \sigma^2 \mid \bfm{o})} \nonumber \\
 %&\propto& \exp\left[-\frac{1}{2 (\sigma^2/N)} (\mu - \hat{\mu})^2 \right] 
-P(\mu \mid \sigma^2, \bfm{o}) &\propto& \exp\left[-\frac{1}{2 (\sigma^2/N)} (\mu - \hat{\mu})^2 \right] 
+\Pr(\mu \mid \sigma^2, \bfm{o}) &\propto& \exp\left[-\frac{1}{2 (\sigma^2/N)} (\mu - \hat{\mu})^2 \right] 
 \end{eqnarray}
 where $\hat{\mu}$ is the sample mean for $\bfm{o}$, the samples in state $m$,
 \begin{eqnarray}
@@ -943,10 +946,10 @@ This allows us to update $\mu$ according to
 
 The conditional distribution of the variance $\sigma^2$ is given by
 \begin{eqnarray}
-%P(\sigma^2 \mid \mu, \bfm{o}) &=& \frac{p(\mu, \sigma^2 \mid \bfm{o})}{\int d\sigma^2 \, p(\mu, \sigma^2 \mid \bfm{o})} \nonumber \\
+%\Pr(\sigma^2 \mid \mu, \bfm{o}) &=& \frac{\Pr(\mu, \sigma^2 \mid \bfm{o})}{\int d\sigma^2 \, \Pr(\mu, \sigma^2 \mid \bfm{o})} \nonumber \\
 %&\propto& \sigma^{-(N+1)} \exp\left[-\frac{1}{2 \sigma^2} \sum_{n=1}^N (o_n - \mu)^2 \right] \nonumber \\
 %&\propto& \sigma^{-(N+1)} \exp\left[-\frac{N \hat{\sigma}^2}{2 \sigma^2} \right] 
-P(\sigma^2 \mid \mu, \bfm{o}) &\propto& \sigma^{-(N+1)} \exp\left[-\frac{N \hat{\sigma}^2}{2 \sigma^2} \right] 
+\Pr(\sigma^2 \mid \mu, \bfm{o}) &\propto& \sigma^{-(N+1)} \exp\left[-\frac{N \hat{\sigma}^2}{2 \sigma^2} \right] 
 \end{eqnarray}
 where the quantity $\hat{\sigma}^2$, which is not in general identical to the sample variance, is given by
 \begin{eqnarray}
@@ -963,7 +966,7 @@ and then update $\sigma^2$ as
 \end{eqnarray}
 Note that $\mu$ and $\sigma^2$ can be updated in either order, but the updated values of $\mu$ or $\sigma^2$ must be used in sampling the not-yet-updated $\sigma^2$ or $\mu$, and vice-versa.
 
-Other output probabilities, such as mixtures of normal distributions or other distributions, can be substituted by simply changing $P(\bfm{E} \mid \bfm{O}, \bfm{S})$ and the scheme by which $\bfm{E}$ is updated.
+Other output probabilities, such as mixtures of normal distributions or other distributions, can be substituted by simply changing $\Pr(\bfm{E} \mid \bfm{O}, \bfm{S})$ and the scheme by which $\bfm{E}$ is updated.
 
 
 \end{document}
