@@ -249,8 +249,8 @@ A Matlab implementation of the approach described here is also made freely avail
 \noindent
 \resizebox{0.8\textwidth}{!}{\includegraphics{algorithm-workflow/Fig_ProbabilitySpace.pdf}}
 \caption{{\bf Illustration of the Bayesian hidden Markov model (BHMM) sampling algorithm.}
-During each BHMM update, a modified forward-backward algorithm is used to sample a new hidden state trace $\mathbf{S}$, which is then used to generate a new sample of the reversible transition matrix $\mathbf{T}$ using MCMC sampling, followed by sapling of the state emission probabilities $\mathbf{E}$.
-The cycle then repeats for each subsequent iteration, which together sample from the Bayesian posterior of the HMM and fully characterize the uncertainty in the kinetic model given the data.
+During each BHMM sampling iteration, a modified forward-backward algorithm is used to sample a new hidden state trace $\mathbf{S}$, which is then used to generate a new sample of the reversible transition matrix $\mathbf{T}$ using MCMC sampling, followed by sampling new state emission probabilities $\mathbf{E}$.
+Collectively, these updates sample from the Bayesian posterior of the HMM and fully characterize the uncertainty in the kinetic model given the data.
 \label{figure:bhmm-workflow}}
 \end{figure*}
 
