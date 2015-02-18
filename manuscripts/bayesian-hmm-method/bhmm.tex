@@ -25,6 +25,7 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[]{algorithm2e}
 
 \usepackage{graphicx}
 \usepackage{dcolumn}
@@ -827,58 +828,216 @@ It is straightforward to show the result of these sampling steps reconstitutes t
 {\color{red} If we assume each row of the transition matrix $\bfm{T}$ is independent with Dirichlet prior $\Pr(\bfm{T})$, then it is possible to sample from the transition matrix posterior Dirichlet distribution $\Pr(\bfm{T}' \mid \bfm{S}')$, given the transition counts calculated from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.}
 However, because physical systems in the absence of energy input through an external driving force should satisfy detailed balance, we make use of this constraint in updating our transition probabilities, since this has been demonstrated to substantially reduce parameter uncertainty in the data-limited regime~\cite{noe:jcp:2008:transition-matrix-sampling}.
 
-The transition matrix is updated using the reversible transition matrix sampling scheme of No\'{e}~\cite{noe:jcp:2008:transition-matrix-sampling,chodera-noe:jcp:2011:observable-sampling}.
-Here, an adjusted count matrix $\bfm{C} \equiv (c_{ij})$ is computed using the updated hidden state sequence $\bfm{S}'$,
-\begin{eqnarray}
-c_{ij} &=& b_{ij} +\sum_{t=1}^{L} \delta_{is_{t-1}} \delta_{js_{t}} ,
-\end{eqnarray}
-where the Kronecker $\delta_{ij} = 1$ if $i = j$ and zero otherwise, and $\bfm{B} \equiv (b_{ij})$ is a matrix of prior pseudocounts, which we take to be zero following the work of No\'{e} et al.~\cite{noe:pnas:2009:ww-domain}.
-Using the adjusted count matrix $\bfm{C}$, a Metropolis-Hastings Monte Carlo procedure~\cite{metropolis-hastings} is used to update the matrix and produce a new sample from $\Pr(\bfm{T}' \mid \bfm{S}')$.
-Two move types are attempted, selected with equal probability, and 1000 trial moves are attempted to generate a new sample $\bfm{T}'$ that is approximately uncorrelated from the previous $\bfm{T}$.
-Prior to starting the Monte Carlo procedure, the vector of equilibrium probabilities for all states $\bfv{\pi}$ is computed according to 
-\begin{eqnarray}
-\bfm{T}^\T \bfv{\pi} = \bfv{\pi} .
-\end{eqnarray}
 
-The first move type is a reversible element shift.
-A pair of states $(i,j)$, $i \ne j$, are selected with uniform probability, and a random number $\Delta$ is selected uniformly over the interval,
-\begin{equation*}
-\Delta \in[\max(-T_{ii},-\frac{\pi_{j}}{\pi_{i}}T_{jj}),T_{ij}] .
-\end{equation*}
-The changed elements in the proposed transition matrix $\bfm{T}'$ are then given by:
-\begin{align*}
-T'_{ij} & =T_{ij}-\Delta \:\: ; \:\: T'_{ji}  =T_{ji}-\frac{\pi_{i}}{\pi_{j}}\Delta \\
-T'_{ii} & =T_{ii}+\Delta \:\: ; \:\: T'_{jj}  =T_{jj}+\frac{\pi_{i}}{\pi_{j}}\Delta  .
-\end{align*}
-This move is accepted with probability
-\begin{eqnarray}
-\lefteqn{P_\mathrm{accept}(\bfm{T}' | \bfm{T} ) = \mathrm{min}\left\{1, \sqrt{\frac{(T'_{ij})^{2}+(T'_{ji})^{2}}{(T_{ij})^{2}+(T_{ji})^{2}}} \right. }\\
-&\times& \left. \left(\frac{T'_{ii}}{T_{ii}}\right)^{c_{ii}}\left(\frac{T'_{ij}}{T_{ij}}\right)^{c_{ij}} \left(\frac{T'_{jj}}{T_{jj}}\right)^{c_{jj}}\left(\frac{T'_{ji}}{T_{ji}}\right)^{c_{ji}} \right\} . \nonumber
-\end{eqnarray}
-This move will leave the vector of stationary probabilities $\bfv{\pi}$ unchanged.
+%%%%%%%%%%%%%%
 
-The second move type is a row shift.
-A row $i$ of $\bfm{T}$ is selected with uniform probability, and a random number $\eta$ chosen uniformly over the interval 
-\begin{equation*}
-\eta\in\left[0,\frac{1}{1-T_{ii}}\right]
-\end{equation*}
-and used to update row $i$ of $\bfm{T}$ according to
+\color{magenta}
+
+Here we employ the reversible transition matrix sampling algorithm derived in [{\bf FN: reference to reversible T-matrix estimation preprint when available}]. We first define a coordinate transform to unconditional transition probabilities:
+\begin{equation}
+  \label{eq:transformation_T_X}
+  x_{ij} = \pi_{i} T_{ij}
+\end{equation}
+and sample from their posterior 
+\begin{equation}
+  \label{eq:X_posterior}
+   p(\mathbf{X} \mid \mathbf{C} ) = p(\mathbf{C} \mid \mathbf{X}) p(\mathbf{X})
+\end{equation}
+using the prior
+\begin{equation}
+  \label{eq:X_prior}
+   p(\mathbf{X}) = \prod_{i \ge j} x_{ij}^{-1}.
+\end{equation}
+This choice of prior ensures that the maximum likelihood estimator, i.e. the maximum of $p(\mathbf{C} \mid \mathbf{X})$ coincides with
+the mean of the posterior $p(\mathbf{X} \mid \mathbf{C} )$. This behavior is desirable in order to have uncertainty intervals envelop the
+maximum likelihood estimator. Without a suitable choice of prior this property is lost, as described in~\cite{noe:pnas:2009:ww-domain}.
+
+It turns out that the posterior (\ref{eq:X_posterior}) can be conveniently sampled by considering yet another set of
+variables $\mathbf{V}=[v_{ij}]$, which are related to $\mathbf{X}$ by the scaling $x_{ij} = v_{ij} / \sum_{k,l} v_{kl}$. Thus, we can still recover 
+transition matrices from the $v_{ij}$ variables by row normalization:
+\begin{equation}
+  \label{eq:T_from_V}
+  T_{ij} = \frac{v_{ij}}{\sum_k v_{ik}}
+\end{equation}
+
+Using the $v_{ij}$ variables, the sampling of posterior (\ref{eq:X_posterior}) is implemented by iterating the following Gibbs sampling
+procedure. Initially, when given an initial transition matrix $\mathbf{T}^{(0)}$, we set 
+\begin{equation} 
+	v_{ij}^{(0)} = x_{ij}^{(0)} = \pi_{i} T_{ij}^{(0)}
+\end{equation} 
+When starting from scratch we initialize 
+\begin{equation} 
+	v_{ij}^{(0)} = (c_ij + c_ji) / 2 \sum_{k,l} c_{kl}.
+\end{equation} 
+In each Gibbs sampling cycle we iterate through all $i \ge j$. If $c_{ij} + c_{ji} = 0$, the conditional probability density is concentrated at
+$v_{ij} = 0$ and we do not perform any action. If  $c_{ij} + c_{ji} > 0$, one of the following two steps is executed for either diagonal or off-diagonal
+elements:
+
+%% diagonals
+{\bf Case 1: diagonals}: If $i = j$, we sample $v_{ii}^{(k+1)}$ according to the conditional
 \begin{eqnarray}
-T'_{ij} &=& \begin{cases}
-\eta T_{ij} & j = 1, \ldots, M, \:\: j \ne i\\
-\eta (T_{ii} - 1) + 1 & j = i
-\end{cases}
+  \mathbb{P}(v_{ii} | \{v_{kl}\}_{k \geq l} \backslash \{v_{ii}\}, \mathbf{C}) 
+							& \propto & v_{ii}^{c_{ii}-1} (v_i - v_{ii})^{-c_{i}}. \\
+							& \propto & T_{ii}^{c_{ii}-1} (1 - T_{ii})^{c_{i}-c_{ii}-1}.
+  \label{eq:conditional_pkk}
 \end{eqnarray}
-This move is accepted with probability
-\begin{eqnarray}
-P_\mathrm{accept}(\bfm{T}' | \bfm{T}) &=& \mathrm{min} \left\{1, \eta^{(M-2)} \eta^{(c_{i*}-c_{ii})}\left(\frac{1-\eta(1-T_{ii})}{T_{ii}}\right)^{c_{ii}} \right\} . \nonumber\\
-\end{eqnarray}
-The row shift operation will change the stationary distribution of $\bfv{\pi}'$, but it may be efficiently updated with
-\begin{align*}
-\pi'_{i} & =\frac{\pi_{i}}{\pi_{i}+\eta(1-\pi_{i})} \:\: ; \:\: \pi'_{j} =\frac{\eta \, \pi_{j}}{\pi_{i}+\eta(1-\pi_{i})}.
-\end{align*}
-Since this update scheme is incremental, it will accumulate numerical errors over time that cause the updated $\bfv{\pi}$ to drift away from the stationary distribution of the current transition matrix. 
-To avoid this, $\bfv{\pi}$ is recomputed from the current sample of the transition matrix in regular intervals (here, every 100 sampling steps).
+where we have introduced the row sums
+\begin{equation}
+   v_i = \sum_j v_{ij}.
+\end{equation}
+The conditional (\ref{eq:conditional_pkk}) can be sampled by drawing Beta-distributed variables 
+\begin{equation}
+	T_{ii}\sim \mathrm{Beta}(\alpha,\beta)
+	\label{eq:betadist}
+\end{equation}
+with parameters
+$\alpha=c_{ii}$ and $\beta=c_{i}-c_{ii}$ (see \cite{Devroye_Springer86_NonuniformRandom}). The new element $v_{ii}^{(k+1)}$
+can be obtained from the sampled $T_{ii}$ by
+\begin{equation}
+  v_{ii}^{(k+1)}=\frac{T_{ii}}{1-T_{ii}} (v_i^{(k)} - v_{ii}^{(k)}).
+  \label{eq:diagonal_transformation}
+\end{equation}
+
+% off-diagonals.
+{\bf Case 2: off-diagonals}: If $i \neq j$, we have to sample a conditional density which is not easily tractable. Therefore,
+we approximate the conditional density as follows:
+\begin{equation}
+  \begin{aligned}
+&  v_{ij}^{(c_{ij}+c_{ji}-1)} (v_i^{(k)} - v_{ij}^{(k)} + v_{ij})^{-c_i} (v_j^{(k)} - v_{ji}^{(k)} + v_{ij})^{-c_j}  \\ 
+& \approx q(v_{ij} \mid \alpha, \beta, f_0)
+  \end{aligned}
+  \label{eq:conditional_vkl_f}
+\end{equation}
+where employ the approximate function
+\begin{equation}
+	q(v_{ij} \mid \alpha, \beta, f_0)         = (v_{ij})^{-1} \exp \left( \alpha \log v_{ij} - \beta v_{ij} + f_0 \right)
+	\label{eq:approximation_conditional}
+\end{equation}
+which is, up to a constant factor, a Gamma distribution with parameters $\alpha$, $\beta$ which can be
+efficiently sampled \cite{Devroye_Springer86_NonuniformRandom}. The parameters are given by
+\begin{subequations}
+  \begin{align}
+    \alpha & = -f''(\bar{v}_{ij}) \bar{v}_{ij}^2 \label{eq:alpha}\\
+    \beta & = -f''(\bar{v}_{ij}) \bar{v}_{ij} \label{eq:beta} \\
+    f_0 & = f(\bar{v}_{ij}) +  f''(\bar{v}_{ij}) \bar{v}_{ij}^2 (\log \bar{v}_{ij} -1) \label{eq:f0},
+  \end{align}
+\end{subequations}
+with the maximum point $\bar{v}_{ij}$ as the positive root of a quadratic equation:
+\begin{equation}
+  \label{eq:maximum_point}
+  \bar{v}_{ij} = \frac{-b + \sqrt{b^2-4ac}}{2a}
+\end{equation}
+and $a$, $b$, $c$ given by:
+\begin{subequations}
+  \begin{align}
+    a &=c_{i}+ c_{j}- c_{ij}- c_{ji} \label{eq:a} \\
+    b &= c_{i} (v_i^{(k)} - v_{ij}^{(k)}) + c_{j} (v_j^{(k)} - v_{ji}^{(k)}) \nonumber \\
+       & - (c_{ij}+c_{ji}) (v_i^{(k)} - v_{ij}^{(k)} + v_j^{(k)} - v_{ji}^{(k)}) \label{eq:b} \\
+    c &= -(c_{ij}+c_{ji}) (v_i^{(k)} - v_{ij}^{(k)}) (v_j^{(k)} - v_{ji}^{(k)}) \label{eq:c}
+  \end{align}
+\end{subequations}
+The approximate conditional $q$ in \eqref{eq:approximation_conditional} is
+not necessarily a bounding envelope for the true conditional
+\eqref{eq:conditional_vkl_f} so that instead of rejection sampling we
+use the approximation $q$ as a proposal density in a Metropolis sampling
+step. The acceptance probability for the step is then given as $\min
+\{1, p_{acc}\}$ with
+\begin{equation}
+  \label{eq:pacc}
+  p_{acc}=\frac{ q(v_{ij}^{(k)}) v_{ij}^{(k)} \exp f(v_{ij}^{(k+1)})}{ q(v_{ij}^{(k+1)}) v_{ij}^{(k+1)}  \exp f(v_{ij}^{(k)})}.
+\end{equation}
+
+For each element sampled, symmetry of the $\mathbf{V}$ matrix is enforced by setting $v_{lk} = v_{kl}$. After each
+cycle of the Gibbs sampling procedure, we rescale $\mathbf{V}$ by
+\begin{equation}
+  v_{ij}^{(k+1)} \leftarrow \frac{v_{ij}^{(k+1)}}{\sum_{l,m} v_{lm}^{(k+1)}}
+\end{equation}
+
+In brief, we can summarize the above procedure by the algorithm:
+\begin{algorithm}
+  \DontPrintSemicolon
+  \SetAlgoNoLine
+  \SetInd{0.5em}{1.0em}
+  \KwIn{$C$, $V^{(k)}$}
+  \KwOut{$V^{(k+1)}$}
+  \For{$i=1,\dotsc,n$}{
+    \For{$j=1,\dotsc, i$}{
+      \If{$c_{ij}+c_{ji}>0$}{
+        \eIf{$i=j$}{
+          % $\alpha=c_{kk}$, $\beta=c_{k}-c_{kk}$\;
+          % $p_{kk}=\frac{v^{(j)}_{kk}}{v^{(j)}_{k,-k}+v^{(j)}_{kk}}$\;
+          % $p'_{kk} \sim \text{Beta}(\alpha, \beta)$\;
+          % $v_{kk}^{(j+1)}=\frac{p'_{kk}}{1-p'_{kk}}v_{k, -k}^{(j)}$\;
+          Sample $v^{(k+1)}_{ii}$ according to
+          \eqref{eq:conditional_pkk}, \eqref{eq:transformation_p_v}\;
+        }{ Obtain parameters $a$, $b$, $c$ from \eqref{eq:a},
+          \eqref{eq:b}, \eqref{eq:c}\; Compute $\bar{v}_{ij}$
+          according to \eqref{eq:maximum_point}\; Compute parameters
+          $\alpha$, $\beta$, $f_0$ using \eqref{eq:alpha},
+          \eqref{eq:beta},\eqref{eq:f0}\; Sample $v'_{ij}$ according
+          to \eqref{eq:approximation_conditional}\; Compute $p_{acc}$
+          from \eqref{eq:pacc}\; $U$ from $[0, 1]$ uniformly
+          distributed\; \eIf{$U<\min\{1, p_{acc}\}$}{
+            $v_{ij}^{(k+1)}=v'_{ij}$\; }{
+            $v_{ij}^{(k+1)}=v^{(k)}_{ij}$\; }
+          $v_{ji}^{(j+1)}=v_{ij}^{(k+1)}$\; } } } }
+\caption{Reversible sampling algorithm \label{alg:reversible_sampler}}
+\end{algorithm}
+
+\color{black}
+
+%The transition matrix is updated using the reversible transition matrix sampling scheme of No\'{e}~\cite{noe:jcp:2008:transition-matrix-sampling,chodera-noe:jcp:2011:observable-sampling}.
+%Here, an adjusted count matrix $\bfm{C} \equiv (c_{ij})$ is computed using the updated hidden state sequence $\bfm{S}'$,
+%\begin{eqnarray}
+%c_{ij} &=& b_{ij} +\sum_{t=1}^{L} \delta_{is_{t-1}} \delta_{js_{t}} ,
+%\end{eqnarray}
+%where the Kronecker $\delta_{ij} = 1$ if $i = j$ and zero otherwise, and $\bfm{B} \equiv (b_{ij})$ is a matrix of prior pseudocounts, which we take to be zero following the work of No\'{e} et al.~\cite{noe:pnas:2009:ww-domain}.
+%Using the adjusted count matrix $\bfm{C}$, a Metropolis-Hastings Monte Carlo procedure~\cite{metropolis-hastings} is used to update the matrix and produce a new sample from $\Pr(\bfm{T}' \mid \bfm{S}')$.
+%Two move types are attempted, selected with equal probability, and 1000 trial moves are attempted to generate a new sample $\bfm{T}'$ that is approximately uncorrelated from the previous $\bfm{T}$.
+%Prior to starting the Monte Carlo procedure, the vector of equilibrium probabilities for all states $\bfv{\pi}$ is computed according to 
+%\begin{eqnarray}
+%\bfm{T}^\T \bfv{\pi} = \bfv{\pi} .
+%\end{eqnarray}
+%
+%The first move type is a reversible element shift.
+%A pair of states $(i,j)$, $i \ne j$, are selected with uniform probability, and a random number $\Delta$ is selected uniformly over the interval,
+%\begin{equation*}
+%\Delta \in[\max(-T_{ii},-\frac{\pi_{j}}{\pi_{i}}T_{jj}),T_{ij}] .
+%\end{equation*}
+%The changed elements in the proposed transition matrix $\bfm{T}'$ are then given by:
+%\begin{align*}
+%T'_{ij} & =T_{ij}-\Delta \:\: ; \:\: T'_{ji}  =T_{ji}-\frac{\pi_{i}}{\pi_{j}}\Delta \\
+%T'_{ii} & =T_{ii}+\Delta \:\: ; \:\: T'_{jj}  =T_{jj}+\frac{\pi_{i}}{\pi_{j}}\Delta  .
+%\end{align*}
+%This move is accepted with probability
+%\begin{eqnarray}
+%\lefteqn{P_\mathrm{accept}(\bfm{T}' | \bfm{T} ) = \mathrm{min}\left\{1, \sqrt{\frac{(T'_{ij})^{2}+(T'_{ji})^{2}}{(T_{ij})^{2}+(T_{ji})^{2}}} \right. }\\
+%&\times& \left. \left(\frac{T'_{ii}}{T_{ii}}\right)^{c_{ii}}\left(\frac{T'_{ij}}{T_{ij}}\right)^{c_{ij}} \left(\frac{T'_{jj}}{T_{jj}}\right)^{c_{jj}}\left(\frac{T'_{ji}}{T_{ji}}\right)^{c_{ji}} \right\} . \nonumber
+%\end{eqnarray}
+%This move will leave the vector of stationary probabilities $\bfv{\pi}$ unchanged.
+%
+%The second move type is a row shift.
+%A row $i$ of $\bfm{T}$ is selected with uniform probability, and a random number $\eta$ chosen uniformly over the interval 
+%\begin{equation*}
+%\eta\in\left[0,\frac{1}{1-T_{ii}}\right]
+%\end{equation*}
+%and used to update row $i$ of $\bfm{T}$ according to
+%\begin{eqnarray}
+%T'_{ij} &=& \begin{cases}
+%\eta T_{ij} & j = 1, \ldots, M, \:\: j \ne i\\
+%\eta (T_{ii} - 1) + 1 & j = i
+%\end{cases}
+%\end{eqnarray}
+%This move is accepted with probability
+%\begin{eqnarray}
+%P_\mathrm{accept}(\bfm{T}' | \bfm{T}) &=& \mathrm{min} \left\{1, \eta^{(M-2)} \eta^{(c_{i*}-c_{ii})}\left(\frac{1-\eta(1-T_{ii})}{T_{ii}}\right)^{c_{ii}} \right\} . \nonumber\\
+%\end{eqnarray}
+%The row shift operation will change the stationary distribution of $\bfv{\pi}'$, but it may be efficiently updated with
+%\begin{align*}
+%\pi'_{i} & =\frac{\pi_{i}}{\pi_{i}+\eta(1-\pi_{i})} \:\: ; \:\: \pi'_{j} =\frac{\eta \, \pi_{j}}{\pi_{i}+\eta(1-\pi_{i})}.
+%\end{align*}
+%Since this update scheme is incremental, it will accumulate numerical errors over time that cause the updated $\bfv{\pi}$ to drift away from the stationary distribution of the current transition matrix. 
+%To avoid this, $\bfv{\pi}$ is recomputed from the current sample of the transition matrix in regular intervals (here, every 100 sampling steps).
 
 %%%%%%%%%%%
 \subsubsection{Updating the observable distribution parameters}
