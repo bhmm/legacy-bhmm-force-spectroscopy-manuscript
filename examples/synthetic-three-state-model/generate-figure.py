@@ -26,6 +26,13 @@ print testsystems.total_state_visits(nstates, S)
 # Generate MLHMM.
 print "Generating MLHMM..."
 mlhmm = MLHMM(O, nstates, verbose=True)
+
+print "Initial guess:"
+print str(mlhmm.model.output_model)
+print mlhmm.model.Tij
+print mlhmm.model.Pi
+
+print "Fitting HMM..."
 mlhmm_model = mlhmm.fit()
 
 # Plot.
