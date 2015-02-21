@@ -18,8 +18,8 @@ time_units = 's' # seconds
 o_t = ncfile.variables['force'] # load trace
 
 # force to make a copy because netCDF appears to cause problems
-o_t = o_t[::10]
-tau *= 10
+o_t = o_t[::50]
+tau *= 50
 # -------------------
 
 O = [o_t] # form list of traces
