@@ -36,9 +36,9 @@ print "Fitting HMM..."
 mlhmm_model = mlhmm.fit()
 
 # Plot.
-s_t = mlhmm_model.hidden_state_trajectories[0]
+s_t = mlhmm.hidden_state_trajectories[0]
 o_t = O[0]
-plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-mlhmm.pdf')
+plots.plot_state_assignments(mlhmm_model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-mlhmm.pdf')
 
 # Initialize BHMM with MLHMM model.
 print "Sampling models from BHMM..."
