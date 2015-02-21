@@ -10,7 +10,7 @@ from bhmm import plots
 
 # Load force data.
 from netcdf4 import Dataset
-ncfile = Dataset('fiber3-trace011', 'r')
+ncfile = Dataset('fiber3-trace011.nc', 'r')
 tau = 0.001 # 1 kHz
 obs_label = 'force / pN'
 time_units = 's' # seconds
