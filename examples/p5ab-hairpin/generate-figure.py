@@ -41,7 +41,13 @@ bhmm = BHMM(O, nstates, initial_model=mle)
 models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
 
 # Generate a sample saving a hidden state trajectory.
-models = bhmm.sample(nsamples=1, save_hidden_state_trajectory=True)
+final_models = bhmm.sample(nsamples=1, save_hidden_state_trajectory=True)
+
+# Plot.
+model = final_models[0]
+s_t = model.hidden_state_trajectories[0]
+o_t = O[0]
+plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-bhmm-stateassignments.pdf')
 
 
 
