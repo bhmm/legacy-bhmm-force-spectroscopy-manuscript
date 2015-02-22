@@ -18,8 +18,9 @@ time_units = 's' # seconds
 o_t = ncfile.variables['force'] # load trace
 
 # force to make a copy because netCDF appears to cause problems
-o_t = o_t[::50]
-tau *= 50
+nsubsample = 50 # subsampling rate
+o_t = o_t[::nsubsample]
+tau *= nsubsample
 # -------------------
 
 O = [o_t] # form list of traces
@@ -27,15 +28,20 @@ O = [o_t] # form list of traces
 # Initialize MLHMM.
 print "Initializing MLHMM..."
 nstates = 3
-mlhmm = MLHMM(O, nstates)
+mlhmm = MLHMM(O, nstates, verbose=True)
+
+# Plot initial guess.
+plots.plot_state_assignments(mlhmm.model, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-guess-stateassignments-threestate.pdf')
+
+# Fit MLHMM
 mle = mlhmm.fit()
 
 # Plot.
-plots.plot_state_assignments(mle, mlhmm.hidden_state_trajectories[0], o_t, time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-mlhmm-stateassignments.pdf')
+plots.plot_state_assignments(mle, mlhmm.hidden_state_trajectories[0], o_t, time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-mlhmm-stateassignments-threestate.pdf')
 
 # Initialize BHMM, using MLHMM model as initial model.
 print "Initializing BHMM..."
-bhmm = BHMM(O, nstates, initial_model=mle)
+bhmm = BHMM(O, nstates, initial_model=mle, verbose=True)
 
 # Sample models.
 models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
@@ -47,7 +53,7 @@ final_models = bhmm.sample(nsamples=1, save_hidden_state_trajectory=True)
 model = final_models[0]
 s_t = model.hidden_state_trajectories[0]
 o_t = O[0]
-plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-bhmm-stateassignments.pdf')
+plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-bhmm-stateassignments-threestate.pdf')
 
 
 
