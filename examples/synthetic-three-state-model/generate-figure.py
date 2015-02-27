@@ -32,6 +32,12 @@ print str(mlhmm.model.output_model)
 print mlhmm.model.Tij
 print mlhmm.model.Pi
 
+# Plot final BHMM sample.
+model = mlhmm.model
+s_t = None
+o_t = O[0]
+plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-guess.pdf')
+
 print "Fitting HMM..."
 mlhmm_model = mlhmm.fit()
 
@@ -48,7 +54,7 @@ bhmm_models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
 # Generate a sample saving a hidden state trajectory.
 final_models = bhmm.sample(nsamples=1, save_hidden_state_trajectory=True)
 
-# Plot.
+# Plot final BHMM sample.
 model = final_models[0]
 s_t = model.hidden_state_trajectories[0]
 o_t = O[0]
