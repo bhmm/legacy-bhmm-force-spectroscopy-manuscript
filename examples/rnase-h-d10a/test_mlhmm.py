@@ -23,8 +23,8 @@ O = [o_t] # form list of traces
 
 # Initialize MLHMM.
 print "Initializing MLHMM..."
-nstates = 3
-mlhmm = MLHMM(O, nstates)
+nstates = 4
+mlhmm = MLHMM(O, nstates, kernel='c')
 mle = mlhmm.fit()
 
 # Plot.
