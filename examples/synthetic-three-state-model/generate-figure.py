@@ -32,7 +32,7 @@ print str(mlhmm.model.output_model)
 print mlhmm.model.Tij
 print mlhmm.model.Pi
 
-# Plot final BHMM sample.
+# Plot initial guess.
 model = mlhmm.model
 s_t = None
 o_t = O[0]
