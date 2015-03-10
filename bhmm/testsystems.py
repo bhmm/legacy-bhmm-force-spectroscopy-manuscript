@@ -205,9 +205,9 @@ def generate_synthetic_observations(nstates=3, ntrajectories=10, length=10000,
     return [model, O, S]
 
 
-def generate_random_bhmm(nstates=3, ntrajectories=10, length=10000, verbose=False,
+def generate_random_bhmm(nstates=3, ntrajectories=10, length=1000, verbose=False,
                          omin = -5, omax = 5, sigma_min = 0.5, sigma_max = 2.0,
-                         lifetime_max = 100, lifetime_min = 10, reversible = True):
+                         lifetime_max = 50, lifetime_min = 5, reversible = True):
     """Generate a BHMM model from synthetic data from a random HMM model.
 
     Parameters
