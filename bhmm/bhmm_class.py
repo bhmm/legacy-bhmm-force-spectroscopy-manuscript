@@ -33,7 +33,7 @@ class BHMM(object):
     Initialize a new BHMM model.
 
     >>> from bhmm import BHMM
-    >>> bhmm = BHMM(data, nstates)
+    >>> bhmm = BHMM(data, nstates, verbose=True)
 
     Sample from the posterior.
 
@@ -121,7 +121,7 @@ class BHMM(object):
         --------
 
         >>> from bhmm import testsystems
-        >>> [model, observations, states, bhmm] = testsystems.generate_random_bhmm()
+        >>> [model, observations, states, bhmm] = testsystems.generate_random_bhmm(verbose=True)
         >>> nburn = 1 # run the sampler a bit before recording samples
         >>> nsamples = 4 # generate 4 samples
         >>> nthin = 2 # discard one sample in between each recorded sample
@@ -193,7 +193,7 @@ class BHMM(object):
         Examples
         --------
         >>> import testsystems
-        >>> [model, observations, states, bhmm] = testsystems.generate_random_bhmm()
+        >>> [model, observations, states, bhmm] = testsystems.generate_random_bhmm(verbose=True)
         >>> o_t = observations[0]
         >>> s_t = bhmm._sampleHiddenStateTrajectory(o_t)
 
