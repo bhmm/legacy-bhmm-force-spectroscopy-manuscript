@@ -7,7 +7,8 @@ from bhmm import MLHMM
 o = np.loadtxt('2well_traj_100K.dat', dtype=int)
 
 # multiple lags
-lags = [1,2,5,10,20,50,100,200,500,1000]
+#lags = [300]
+lags = [1,2,5,10,20,50,100,200,300,400,500,600,700,800,900,1000]
 its  = np.zeros((len(lags)))
 for (i,lag) in enumerate(lags):
     # prepare shifted lagged data
@@ -16,7 +17,7 @@ for (i,lag) in enumerate(lags):
         observations.append(o[shift:][::lag])
 
     # initial HMM
-    hmm = MLHMM(observations, 2, kernel='c')
+    hmm = MLHMM(observations, 2, kernel='c', output_model_type='discrete')
     hmm.fit()
     P = hmm.model.Tij
     its[i] = msmana.timescales(P, tau=lag)[1]
