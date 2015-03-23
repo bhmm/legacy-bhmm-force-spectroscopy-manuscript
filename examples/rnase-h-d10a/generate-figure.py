@@ -23,7 +23,7 @@ O = [o_t] # form list of traces
 
 # Initialize MLHMM.
 print "Initializing MLHMM..."
-nstates = 3
+nstates = 4
 mlhmm = MLHMM(O, nstates)
 mle = mlhmm.fit()
 
