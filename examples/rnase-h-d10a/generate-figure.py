@@ -23,8 +23,13 @@ O = [o_t] # form list of traces
 
 # Initialize MLHMM.
 print "Initializing MLHMM..."
-nstates = 4
-mlhmm = MLHMM(O, nstates)
+nstates = 6
+mlhmm = MLHMM(O, nstates, verbose=True)
+
+# Plot initial guess.
+plots.plot_state_assignments(mlhmm.model, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='RNAseH_trace47-guess-nstates'+str(nstates)+'-stateassignments.pdf')
+
+# Fit HMM.
 mle = mlhmm.fit()
 
 # Plot.
@@ -32,7 +37,7 @@ plots.plot_state_assignments(mle, mlhmm.hidden_state_trajectories[0], o_t, time_
 
 # Initialize BHMM, using MLHMM model as initial model.
 print "Initializing BHMM..."
-bhmm = BHMM(O, nstates, initial_model=mle)
+bhmm = BHMM(O, nstates, initial_model=mle, verbose=True)
 
 # Sample models.
 models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
