@@ -10,9 +10,7 @@ o = np.loadtxt('2well_traj_100K.dat', dtype=int)
 nstates = 2
 
 # multiple lags
-#lags = [300]
-#lags = [1,2,5,10,20,50,100,200,300,400,500,600,700,800,900,1000]
-lags = [300]
+lags = [1,2,5,10,20,50,100,200,300,400,500,600,700,800,900,1000]
 its      = np.zeros((len(lags)))
 its_mean = np.zeros((len(lags)))
 its_std  = np.zeros((len(lags)))
