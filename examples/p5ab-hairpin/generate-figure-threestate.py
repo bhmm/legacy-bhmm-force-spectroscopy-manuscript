@@ -41,7 +41,7 @@ plots.plot_state_assignments(mle, mlhmm.hidden_state_trajectories[0], o_t, time_
 
 # Initialize BHMM, using MLHMM model as initial model.
 print "Initializing BHMM..."
-bhmm = BHMM(O, nstates, initial_model=mle, verbose=True)
+bhmm = BHMM(O, nstates, initial_model=mle, verbose=True, kernel='c')
 
 # Sample models.
 models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
