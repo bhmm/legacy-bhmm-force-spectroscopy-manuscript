@@ -177,3 +177,4 @@ sympy-plots-for-*.tex/
 
 # other
 .idea
+.DS_Store
