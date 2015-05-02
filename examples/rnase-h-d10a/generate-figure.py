@@ -33,7 +33,7 @@ def run(nstates, nsamples):
 
     # Plot initial guess.
     plots.plot_state_assignments(estimator.hmm, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-guess-nstates'+str(nstates)+'-stateassignments.pdf')
+                                 pdf_filename='RNAseH_trace47-guess-stateassignments-nstates'+str(nstates)+'.pdf')
 
     # Fit HMM.
     mle = estimator.fit()
@@ -41,7 +41,7 @@ def run(nstates, nsamples):
     # Plot.
     plots.plot_state_assignments(mle, estimator.hidden_state_trajectories[0], o_t, time_units=time_units,
                                  obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-mlhmm-nstates'+str(nstates)+'-stateassignments.pdf')
+                                 pdf_filename='RNAseH_trace47-mlhmm-stateassignments-nstates'+str(nstates)+'.pdf')
 
     # Initialize BHMM, using MLHMM model as initial model.
     print "Initializing BHMM and running with "+str(nsamples)+" samples."
@@ -58,7 +58,7 @@ def run(nstates, nsamples):
     s_t = model.hidden_state_trajectories[0]
     o_t = O[0]
     plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-bhmm-nstates'+str(nstates)+'-stateassignments.pdf')
+                                 pdf_filename='RNAseH_trace47-bhmm-stateassignments-nstates'+str(nstates)+'.pdf')
 
 
 if __name__ == "__main__":

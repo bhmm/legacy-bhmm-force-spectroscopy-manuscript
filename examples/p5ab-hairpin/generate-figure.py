@@ -37,7 +37,7 @@ def run(nstates, nsamples):
 
     # Plot initial guess.
     plots.plot_state_assignments(estimator.hmm, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='fiber3-trace11-guess-stateassignments-threestate.pdf')
+                                 pdf_filename='fiber3-trace11-guess-stateassignments-nstate'+str(nstates)+'.pdf')
 
     # Fit MLHMM
     mle = estimator.fit()
@@ -45,7 +45,7 @@ def run(nstates, nsamples):
     # Plot.
     plots.plot_state_assignments(mle, estimator.hidden_state_trajectories[0], o_t, time_units=time_units,
                                  obs_label=obs_label, tau=tau,
-                                 pdf_filename='fiber3-trace11-mlhmm-stateassignments-threestate.pdf')
+                                 pdf_filename='fiber3-trace11-mlhmm-stateassignments-nstate'+str(nstates)+'.pdf')
 
     # Initialize BHMM, using MLHMM model as initial model.
     print "Initializing BHMM and running with "+str(nsamples)+" samples."
@@ -62,7 +62,7 @@ def run(nstates, nsamples):
     s_t = model.hidden_state_trajectories[0]
     o_t = O[0]
     plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='fiber3-trace11-bhmm-stateassignments-threestate.pdf')
+                                 pdf_filename='fiber3-trace11-bhmm-stateassignments-nstate'+str(nstates)+'.pdf')
 
 
 if __name__ == "__main__":

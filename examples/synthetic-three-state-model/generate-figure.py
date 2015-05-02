@@ -32,7 +32,7 @@ def run(nstates, nsamples):
 
     # Generate MLHMM.
     print "Generating MLHMM..."
-    estimator = bhmm.MLHMM(O, nstates, verbose=True)
+    estimator = bhmm.MLHMM(O, nstates)
 
     print "Initial guess:"
     print str(estimator.model.output_model)
@@ -43,7 +43,7 @@ def run(nstates, nsamples):
     s_t = None
     o_t = O[0]
     plots.plot_state_assignments(estimator.hmm, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
-                                 pdf_filename='synthetic-three-state-model-guess.pdf')
+                                 pdf_filename='synthetic-three-state-model-guess-nstates'+str(nstates)+'.pdf')
 
     print "Fitting HMM..."
     mle = estimator.fit()
@@ -52,11 +52,11 @@ def run(nstates, nsamples):
     s_t = mle.hidden_state_trajectories[0]
     o_t = O[0]
     plots.plot_state_assignments(mle, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
-                                 pdf_filename='synthetic-three-state-model-mlhmm.pdf')
+                                 pdf_filename='synthetic-three-state-model-mlhmm-nstates'+str(nstates)+'.pdf')
 
     # Initialize BHMM with MLHMM model.
     print "Sampling models from BHMM..."
-    sampler = bhmm.BHMM(O, nstates, initial_model=mle, verbose=True)
+    sampler = bhmm.BHMM(O, nstates, initial_model=mle)
     bhmm_models = sampler.sample(nsamples=nsamples, save_hidden_state_trajectory=False)
 
     # Generate a sample saving a hidden state trajectory.
@@ -67,7 +67,7 @@ def run(nstates, nsamples):
     s_t = model.hidden_state_trajectories[0]
     o_t = O[0]
     plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
-                                 pdf_filename='synthetic-three-state-model-bhmm.pdf')
+                                 pdf_filename='synthetic-three-state-model-bhmm-nstates'+str(nstates)+'.pdf')
 
 
 if __name__ == "__main__":
