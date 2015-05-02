@@ -4,61 +4,85 @@ Generate plots for synthetic three-state force spectroscopy model.
 
 """
 
-from bhmm import testsystems
-from bhmm import MaximumLikelihoodEstimator, BHMM
-from bhmm import plots
+import bhmm
+import argparse
 
-# Create model.
-true_model = testsystems.force_spectroscopy_model()
-nstates = true_model.nstates
-tau = 0.001 # time interval per observation
+# dynamically import plotting tools
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+import plots
 
-# Generate synthetic data.
-print "Generating synthetic data..."
-[O, S] = true_model.generate_synthetic_observation_trajectories(ntrajectories=1, length=50000)
+def run(nstates, nsamples):
+    # Create model.
+    true_model = bhmm.testsystems.force_spectroscopy_model()
+    nstates = true_model.nstates
+    tau = 0.001 # time interval per observation
 
-# DEBUG
-print "synthetic observation trajectories:"
-print O
-print "Total state visits, min_state, max_state:"
-print testsystems.total_state_visits(nstates, S)
+    # Generate synthetic data.
+    print "Generating synthetic data..."
+    [O, S] = true_model.generate_synthetic_observation_trajectories(ntrajectories=1, length=50000)
 
-# Generate MLHMM.
-print "Generating MLHMM..."
-mlhmm = MaximumLikelihoodEstimator(O, nstates, verbose=True)
+    # DEBUG
+    print "synthetic observation trajectories:"
+    print O
+    print "Total state visits, min_state, max_state:"
+    print bhmm.testsystems.total_state_visits(nstates, S)
 
-print "Initial guess:"
-print str(mlhmm.model.output_model)
-print mlhmm.model.Tij
-print mlhmm.model.Pi
+    # Generate MLHMM.
+    print "Generating MLHMM..."
+    estimator = bhmm.MLHMM(O, nstates, verbose=True)
 
-# Plot initial guess.
-model = mlhmm.model
-s_t = None
-o_t = O[0]
-plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-guess.pdf')
+    print "Initial guess:"
+    print str(estimator.model.output_model)
+    print estimator.model.transition_matrix
+    print estimator.model.stationary_distribution
 
-print "Fitting HMM..."
-mlhmm_model = mlhmm.fit()
+    # Plot initial guess.
+    s_t = None
+    o_t = O[0]
+    plots.plot_state_assignments(estimator.hmm, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
+                                 pdf_filename='synthetic-three-state-model-guess.pdf')
 
-# Plot.
-s_t = mlhmm.hidden_state_trajectories[0]
-o_t = O[0]
-plots.plot_state_assignments(mlhmm_model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-mlhmm.pdf')
+    print "Fitting HMM..."
+    mle = estimator.fit()
 
-# Initialize BHMM with MLHMM model.
-print "Sampling models from BHMM..."
-bhmm = BHMM(O, nstates, initial_model=mlhmm_model, verbose=True)
-bhmm_models = bhmm.sample(nsamples=10, save_hidden_state_trajectory=False)
+    # Plot.
+    s_t = mle.hidden_state_trajectories[0]
+    o_t = O[0]
+    plots.plot_state_assignments(mle, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
+                                 pdf_filename='synthetic-three-state-model-mlhmm.pdf')
 
-# Generate a sample saving a hidden state trajectory.
-final_models = bhmm.sample(nsamples=1, save_hidden_state_trajectory=True)
+    # Initialize BHMM with MLHMM model.
+    print "Sampling models from BHMM..."
+    sampler = bhmm.BHMM(O, nstates, initial_model=mle, verbose=True)
+    bhmm_models = sampler.sample(nsamples=nsamples, save_hidden_state_trajectory=False)
 
-# Plot final BHMM sample.
-model = final_models[0]
-s_t = model.hidden_state_trajectories[0]
-o_t = O[0]
-plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau, pdf_filename='synthetic-three-state-model-bhmm.pdf')
+    # Generate a sample saving a hidden state trajectory.
+    final_models = sampler.sample(nsamples=1, save_hidden_state_trajectory=True)
+
+    # Plot final BHMM sample.
+    model = final_models[0]
+    s_t = model.hidden_state_trajectories[0]
+    o_t = O[0]
+    plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
+                                 pdf_filename='synthetic-three-state-model-bhmm.pdf')
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation for synthetic data')
+    parser.add_argument('nstates', default=3, help='number of states')
+    parser.add_argument('nsamples', default=10, help='number of samples in Bayesian estimator')
+    parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
+    args = parser.parse_args()
+
+    # be verbose?
+    bhmm.config.verbose = args.verbose
+
+    # go
+    run(args.nstates, args.nsamples)
+
 
 
 

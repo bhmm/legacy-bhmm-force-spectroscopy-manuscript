@@ -4,10 +4,8 @@ Generate plots for synthetic three-state force spectroscopy model.
 
 """
 
-from bhmm import testsystems
-from bhmm import BHMM
 from bhmm import MaximumLikelihoodEstimator
-from bhmm import plots
+from examples import plots
 
 # Load force data.
 from netCDF4 import Dataset
