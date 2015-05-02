@@ -1,7 +1,7 @@
 import numpy as np
 import pyemma.msm.io as msmio
 import pyemma.msm.analysis as msmana
-from bhmm import MLHMM,BHMM
+from bhmm import MaximumLikelihoodEstimator,BHMM
 
 # load observations
 o = np.loadtxt('2well_traj_100K.dat', dtype=int)
@@ -22,7 +22,7 @@ for (i,lag) in enumerate(lags):
         observations.append(o[shift:][::lag])
 
     # initial HMM
-    em = MLHMM(observations, nstates, kernel='c', output_model_type='discrete')
+    em = MaximumLikelihoodEstimator(observations, nstates, kernel='c', output_model_type='discrete')
     em.fit()
     P = em.model.Tij
     its[i] = msmana.timescales(P, tau=lag)[1]

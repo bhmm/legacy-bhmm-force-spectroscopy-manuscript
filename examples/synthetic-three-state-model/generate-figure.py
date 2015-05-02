@@ -5,7 +5,7 @@ Generate plots for synthetic three-state force spectroscopy model.
 """
 
 from bhmm import testsystems
-from bhmm import MLHMM, BHMM
+from bhmm import MaximumLikelihoodEstimator, BHMM
 from bhmm import plots
 
 # Create model.
@@ -25,7 +25,7 @@ print testsystems.total_state_visits(nstates, S)
 
 # Generate MLHMM.
 print "Generating MLHMM..."
-mlhmm = MLHMM(O, nstates, verbose=True)
+mlhmm = MaximumLikelihoodEstimator(O, nstates, verbose=True)
 
 print "Initial guess:"
 print str(mlhmm.model.output_model)

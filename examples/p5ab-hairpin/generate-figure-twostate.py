@@ -6,7 +6,7 @@ Generate plots for synthetic three-state force spectroscopy model.
 
 from bhmm import testsystems
 from bhmm import BHMM
-from bhmm import MLHMM
+from bhmm import MaximumLikelihoodEstimator
 from bhmm import plots
 
 # Load force data.
@@ -28,7 +28,7 @@ O = [o_t] # form list of traces
 # Initialize MLHMM.
 print "Initializing MLHMM..."
 nstates = 2
-mlhmm = MLHMM(O, nstates, verbose=True)
+mlhmm = MaximumLikelihoodEstimator(O, nstates, verbose=True)
 
 # Plot initial guess.
 plots.plot_state_assignments(mlhmm.model, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau, pdf_filename='fiber3-trace11-guess-stateassignments-twostate.pdf')

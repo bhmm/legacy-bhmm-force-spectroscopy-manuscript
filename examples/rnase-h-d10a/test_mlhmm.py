@@ -6,7 +6,7 @@ Generate plots for synthetic three-state force spectroscopy model.
 
 from bhmm import testsystems
 from bhmm import BHMM
-from bhmm import MLHMM
+from bhmm import MaximumLikelihoodEstimator
 from bhmm import plots
 
 # Load force data.
@@ -24,7 +24,7 @@ O = [o_t] # form list of traces
 # Initialize MLHMM.
 print "Initializing MLHMM..."
 nstates = 4
-mlhmm = MLHMM(O, nstates, kernel='c')
+mlhmm = MaximumLikelihoodEstimator(O, nstates, kernel='c')
 mle = mlhmm.fit()
 
 # Plot.
