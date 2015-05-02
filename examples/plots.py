@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import output_models.gaussian
+from bhmm import GaussianOutputModel
 
 __author__ = "John D. Chodera, Frank Noe"
 __copyright__ = "Copyright 2015, John D. Chodera and Frank Noe"
@@ -93,12 +93,13 @@ def plot_state_assignments(model, s_t, o_t, tau=1.0, time_units=None, obs_label=
         # Plot all samples as black.
         tvec = tau * np.array(np.arange(nsamples), dtype=np.float32)
         ax1.plot(tvec, o_t, 'k.', markersize=markersize)
-        # Plot histogram of all data.
-        ax2.hist(o_t, nbins, align='mid', orientation='horizontal', color='k', stacked=True, edgecolor=None, alpha=0.5, linewidth=0, normed=True)
+
+    # Plot histogram of all data.
+    ax2.hist(o_t, nbins, align='mid', orientation='horizontal', color='k', stacked=True, edgecolor=None, alpha=0.5, linewidth=0, normed=True)
 
     # output distributions
     ovec = np.linspace(omin, omax, npoints)
-    pobs = output_model.p_obs(ovec, dtype=np.float64)
+    pobs = output_model.p_obs(ovec)
 
     # Plot.
     for state_index in range(model.nstates):
@@ -107,14 +108,14 @@ def plot_state_assignments(model, s_t, o_t, tau=1.0, time_units=None, obs_label=
 
         # Find and plot samples in state.
         if s_t is not None:
-            indices = np.where(s_t == state_index)
+            indices = np.where(s_t == state_index)[0]
             nsamples_in_state = len(indices)
             if nsamples_in_state > 0:
                 tvec = tau * np.array(np.squeeze(indices), dtype=np.float32)
                 line, = ax1.plot(tvec, o_t[indices], '.', markersize=markersize, color=color)
 
         # Plot shading at one standard deviation width.
-        if type(output_model) is output_models.gaussian.GaussianOutputModel:
+        if type(output_model) is GaussianOutputModel:
             mu = output_model.means[state_index]
             sigma = output_model.sigmas[state_index]
         else:
@@ -123,17 +124,20 @@ def plot_state_assignments(model, s_t, o_t, tau=1.0, time_units=None, obs_label=
         ax1.plot(np.array([tmin, tmax]), mu*np.ones([2]), color=color, linewidth=1, alpha=0.7)
         ax1.fill_between(np.array([tmin, tmax]), (mu-sigma)*np.ones([2]), (mu+sigma)*np.ones([2]), facecolor=color, alpha=0.3, linewidth=0)
 
-        if (s_t is not None) and (nsamples_in_state > 0):
-            # Plot histogram of data assigned to each state.
-            #ax2.hist(o_t[indices], nbins, align='mid', orientation='horizontal', color=color, stacked=True, edgecolor=None, alpha=0.5, linewidth=0, normed=True)
-            histrange = (o_t[indices].min(), o_t[indices].max())
-            dx = (histrange[1]-histrange[0]) / nbins
-            weights = np.ones(o_t[indices].shape, np.float32) / nsamples / dx
-            [Ni, bins, patches] = ax2.hist(o_t[indices], nbins, align='mid', orientation='horizontal', color=color, stacked=True, edgecolor=None, alpha=0.5, linewidth=0, range=histrange, weights=weights)
+        #print "HIST: s_t = ",(s_t is not None)
+        #print "HIST: nsamples_in_states",nsamples_in_state
+        if s_t is not None:
+            if nsamples_in_state > 0:
+                # Plot histogram of data assigned to each state.
+                #ax2.hist(o_t[indices], nbins, align='mid', orientation='horizontal', color=color, stacked=True, edgecolor=None, alpha=0.5, linewidth=0, normed=True)
+                histrange = (o_t[indices].min(), o_t[indices].max())
+                dx = (histrange[1]-histrange[0]) / nbins
+                weights = np.ones(o_t[indices].shape, np.float32) / nsamples / dx
+                [Ni, bins, patches] = ax2.hist(o_t[indices], nbins, align='mid', orientation='horizontal', color=color, stacked=True, edgecolor=None, alpha=0.5, linewidth=0, range=histrange, weights=weights)
 
         # Plot model emission probability distribution.
         pvec = pobs[:,state_index]
-        pvec *= model.Pi[state_index] # Scale the Gaussian components since we are plotting the total histogram.
+        pvec *= model.stationary_distribution[state_index] # Scale the Gaussian components since we are plotting the total histogram.
         ax2.plot(pvec, ovec, color=color, linewidth=1)
 
     if title:

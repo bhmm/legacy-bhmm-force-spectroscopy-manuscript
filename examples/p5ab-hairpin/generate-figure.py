@@ -43,7 +43,7 @@ def run(nstates, nsamples):
     mle = estimator.fit()
 
     # Plot.
-    plots.plot_state_assignments(mle, estimator.hidden_state_trajectories[0], o_t, time_units=time_units,
+    plots.plot_state_assignments(mle, mle.hidden_state_trajectories[0], o_t, time_units=time_units,
                                  obs_label=obs_label, tau=tau,
                                  pdf_filename='fiber3-trace11-mlhmm-stateassignments-nstate'+str(nstates)+'.pdf')
 
