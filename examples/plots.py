@@ -49,7 +49,7 @@ def plot_state_assignments(model, s_t, o_t, tau=1.0, time_units=None, obs_label=
     Example
     -------
 
-    >>> from bhmm.tests import testsystems    >>> import tempfile
+    >>> from bhmm.util import testsystems    >>>     >>> import tempfile
     >>> filename = tempfile.NamedTemporaryFile().name
     >>> [model, O, S, bhmm_sampler] = testsystems.generate_random_bhmm(nstates=3, ntrajectories=1, length=10000)
     >>> plot_state_assignments(model, S[0], O[0], pdf_filename=filename)

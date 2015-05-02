@@ -4,8 +4,11 @@ Generate plots for synthetic three-state force spectroscopy model.
 
 """
 
-import bhmm
 import argparse
+
+import bhmm
+from bhmm.util import testsystems
+
 
 # dynamically import plotting tools
 import os,sys,inspect
@@ -16,7 +19,7 @@ import plots
 
 def run(nstates, nsamples):
     # Create model.
-    true_model = bhmm.testsystems.force_spectroscopy_model()
+    true_model = testsystems.force_spectroscopy_model()
     nstates = true_model.nstates
     tau = 0.001 # time interval per observation
 
@@ -28,16 +31,16 @@ def run(nstates, nsamples):
     print "synthetic observation trajectories:"
     print O
     print "Total state visits, min_state, max_state:"
-    print bhmm.testsystems.total_state_visits(nstates, S)
+    print testsystems.total_state_visits(nstates, S)
 
     # Generate MLHMM.
     print "Generating MLHMM..."
     estimator = bhmm.MLHMM(O, nstates)
 
     print "Initial guess:"
-    print str(estimator.model.output_model)
-    print estimator.model.transition_matrix
-    print estimator.model.stationary_distribution
+    print str(estimator.hmm.output_model)
+    print estimator.hmm.transition_matrix
+    print estimator.hmm.stationary_distribution
 
     # Plot initial guess.
     s_t = None
