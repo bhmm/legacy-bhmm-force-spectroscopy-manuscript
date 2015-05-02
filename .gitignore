@@ -178,3 +178,6 @@ sympy-plots-for-*.tex/
 # other
 .idea
 .DS_Store
+
+# generated figures
+examples/*/*.pdf
