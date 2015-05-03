@@ -1,7 +1,7 @@
 import numpy as np
 import pyemma.msm.io as msmio
 import pyemma.msm.analysis as msmana
-from bhmm import MaximumLikelihoodEstimator,BHMM
+import bhmm
 
 # load observations
 o = np.loadtxt('2well_traj_100K.dat', dtype=int)
@@ -22,25 +22,19 @@ for (i,lag) in enumerate(lags):
         observations.append(o[shift:][::lag])
 
     # initial HMM
-    em = MaximumLikelihoodEstimator(observations, nstates, kernel='c', output_model_type='discrete')
-    em.fit()
-    P = em.model.Tij
-    its[i] = msmana.timescales(P, tau=lag)[1]
-    likelihoods[i] = em.model.likelihood
-
-    # Initialize BHMM, using MLHMM model as initial model.
-    print "BHMM for lag ",lag
-    bhmm = BHMM(observations, nstates, initial_model=em.model, verbose=True)
+    hmm = bhmm.estimate_hmm(observations, nstates, output_model_type='discrete')
+    its[i] = lag*hmm.timescales
+    likelihoods[i] = hmm.likelihood
 
     # Sample models.
-    nsamples = 10
-    models = bhmm.sample(nsamples=nsamples, save_hidden_state_trajectory=False)
-    its_sample = np.zeros((nsamples))
-    for j in range(nsamples):
-        its_sample[j] = msmana.timescales(models[j].Tij, tau=lag)[1]
-    print 'ITS samples = ',its_sample
-    its_mean[i] = np.mean(its_sample)
-    its_std[i] = np.std(its_sample)
+    print "BHMM for lag ",lag
+    nsample = 10
+    sampled_hmms = bhmm.bayesian_hmm(observations, hmm, nsample=nsample, store_hidden=False)
+    print 'sampled timescales: ',sampled_hmms.timescales_samples
+
+    # store sampled timescale moments
+    its_mean[i] = lag*sampled_hmms.timescales_mean
+    its_std[i] = lag*sampled_hmms.timescales_std
 
 print 'Reference:'
 P = msmio.read_matrix('2well_P.dat', mode='sparse').toarray()
