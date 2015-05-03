@@ -10,12 +10,15 @@ o = np.loadtxt('2well_traj_100K.dat', dtype=int)
 nstates = 2
 
 # multiple lags
-lags = [1,2,5,10,20,50,100,200,300,400,500,600,700,800,900,1000]
+lags = [1,5,10,50,100,500,1000]
+#lags = [1,2,5,10,20,50,100,200,300,400,500,600,700,800,900,1000]
 its      = np.zeros((len(lags)))
 its_mean = np.zeros((len(lags)))
 its_std  = np.zeros((len(lags)))
 likelihoods = np.zeros((len(lags)))
 for (i,lag) in enumerate(lags):
+    print ("\n========================================================================")
+    print ("LAG = ",lag)
     # prepare shifted lagged data
     observations = []
     for shift in range(0, lag):
@@ -35,6 +38,8 @@ for (i,lag) in enumerate(lags):
     # store sampled timescale moments
     its_mean[i] = lag*sampled_hmms.timescales_mean
     its_std[i] = lag*sampled_hmms.timescales_std
+
+    print ("========================================================================")
 
 print 'Reference:'
 P = msmio.read_matrix('2well_P.dat', mode='sparse').toarray()
