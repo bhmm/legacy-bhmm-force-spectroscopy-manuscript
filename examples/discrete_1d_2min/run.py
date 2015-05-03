@@ -2,6 +2,7 @@ import numpy as np
 import pyemma.msm.io as msmio
 import pyemma.msm.analysis as msmana
 import bhmm
+bhmm.config.verbose=True
 
 # load observations
 o = np.loadtxt('2well_traj_100K.dat', dtype=int)
