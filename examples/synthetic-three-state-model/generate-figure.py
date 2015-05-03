@@ -8,6 +8,7 @@ import argparse
 
 import bhmm
 from bhmm.util import testsystems
+from bhmm.util.analysis import generate_latex_table
 
 
 # dynamically import plotting tools
@@ -73,11 +74,18 @@ def run(nstates, nsamples):
     plots.plot_state_assignments(model, s_t, o_t, time_units='s', obs_label='force / pN', tau=tau,
                                  pdf_filename='synthetic-three-state-model-bhmm-nstates'+str(nstates)+'.pdf')
 
+    # write latex table with sample statistics
+    conf = 0.95
+    sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models, conf=conf)
+    textable = generate_latex_table(sampled_hmm)
+    f = open('synthetic-three-state-model-bhmm-statistics.tex','w')
+    f.write(textable)
+    f.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation for synthetic data')
-    parser.add_argument('--nstates', default=3, help='number of states')
-    parser.add_argument('--nsamples', default=10, help='number of samples in Bayesian estimator')
+    parser.add_argument('--nstates', default=3, type=int, help='number of states')
+    parser.add_argument('--nsamples', default=10, type=int, help='number of samples in Bayesian estimator')
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
     args = parser.parse_args()
 
