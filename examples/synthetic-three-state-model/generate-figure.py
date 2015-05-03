@@ -76,16 +76,15 @@ def run(nstates, nsamples):
 
     # write latex table with sample statistics
     conf = 0.95
-    sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models, conf=conf)
-    textable = generate_latex_table(sampled_hmm)
-    f = open('synthetic-three-state-model-bhmm-statistics.tex','w')
-    f.write(textable)
-    f.close()
+    sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models)
+    generate_latex_table(sampled_hmm, conf=conf, dt=1, time_unit='step',
+                         caption='Bayesian HMM parameter estimates for synthetic three-state model.',
+                         outfile='synthetic-three-state-model-bhmm-statistics.tex')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation for synthetic data')
     parser.add_argument('--nstates', default=3, type=int, help='number of states')
-    parser.add_argument('--nsamples', default=10, type=int, help='number of samples in Bayesian estimator')
+    parser.add_argument('--nsamples', default=100, type=int, help='number of samples in Bayesian estimator')
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
     args = parser.parse_args()
 
