@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Cython generated files
+bhmm/hidden/impl_c/hidden.c
+bhmm/msm/tmatrix_sampling.c
+bhmm/output_models/impl_c/gaussian.c
+
 # Distribution / packaging
 .Python
 env/
@@ -169,3 +174,10 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
+
+# other
+.idea
+.DS_Store
+
+# generated figures
+examples/*/*.pdf

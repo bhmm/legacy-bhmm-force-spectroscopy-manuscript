@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Generate plots for RNAse-H force spectroscopy model.
+Generate plots for synthetic three-state force spectroscopy model.
 
 """
 
@@ -18,14 +18,18 @@ import plots
 def run(nstates, nsamples):
     # Load force data.
     from netCDF4 import Dataset
-    ncfile = Dataset('rnase-h-d10a-trace47.nc', 'r')
+    ncfile = Dataset('fiber3-trace011.nc', 'r')
     tau = 0.001 # 1 kHz
     obs_label = 'force / pN'
     time_units = 's' # seconds
     o_t = ncfile.variables['force'] # load trace
 
-    # copy data
-    o_t = o_t[:]
+    # force to make a copy because netCDF appears to cause problems
+    nsubsample = 50 # subsampling rate
+    o_t = o_t[::nsubsample]
+    tau *= nsubsample
+    # -------------------
+
     O = [o_t] # form list of traces
 
     # Initialize MLHMM.
@@ -34,15 +38,15 @@ def run(nstates, nsamples):
 
     # Plot initial guess.
     plots.plot_state_assignments(estimator.hmm, None, O[0], time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-guess-stateassignments-nstates'+str(nstates)+'.pdf')
+                                 pdf_filename='fiber3-trace11-guess-stateassignments-nstate'+str(nstates)+'.pdf')
 
-    # Fit HMM.
+    # Fit MLHMM
     mle = estimator.fit()
 
     # Plot.
     plots.plot_state_assignments(mle, mle.hidden_state_trajectories[0], o_t, time_units=time_units,
                                  obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-mlhmm-stateassignments-nstates'+str(nstates)+'.pdf')
+                                 pdf_filename='fiber3-trace11-mlhmm-stateassignments-nstate'+str(nstates)+'.pdf')
 
     # Initialize BHMM, using MLHMM model as initial model.
     print "Initializing BHMM and running with "+str(nsamples)+" samples."
@@ -59,19 +63,18 @@ def run(nstates, nsamples):
     s_t = model.hidden_state_trajectories[0]
     o_t = O[0]
     plots.plot_state_assignments(model, s_t, o_t, time_units=time_units, obs_label=obs_label, tau=tau,
-                                 pdf_filename='RNAseH_trace47-bhmm-stateassignments-nstates'+str(nstates)+'.pdf')
+                                 pdf_filename='fiber3-trace11-bhmm-stateassignments-nstate'+str(nstates)+'.pdf')
 
     # write latex table with sample statistics
     conf = 0.95
     sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models)
     generate_latex_table(sampled_hmm, conf=conf, dt=tau, time_unit='s',
-                         caption='Bayesian HMM parameter estimates for RNAse-H data.',
-                         outfile='rnase-h-bhmm-statistics-table.tex')
-
+                         caption='Bayesian HMM parameter estimates for p5ab hairpin data.',
+                         outfile='p5ab-bhmm-statistics-table.tex')
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation from RNAse-H data')
-    parser.add_argument('--nstates', default=4, type=int, help='number of states')
+    parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation from p5ab hairpin data')
+    parser.add_argument('--nstates', default=3, type=int, help='number of states')
     parser.add_argument('--nsamples', default=100, type=int, help='number of samples in Bayesian estimator')
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
     args = parser.parse_args()
@@ -81,5 +84,3 @@ if __name__ == "__main__":
 
     # go
     run(args.nstates, args.nsamples)
-
-
