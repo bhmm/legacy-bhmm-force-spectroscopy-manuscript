@@ -1,6 +1,6 @@
 package:
   name: bhmm-dev
-  version: !!str 0.0.0
+  version: !!str 0.1.0
 
 build:
   preserve_egg_dir: True
@@ -38,8 +38,6 @@ test:
     - nose
   imports:
     - bhmm
-  commands:
-    - nosetests bhmm --nocapture --verbosity=2 --with-doctest
 
 about:
   home: https://github.com/choderalab/bhmm
