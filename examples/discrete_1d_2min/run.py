@@ -26,7 +26,7 @@ for (i,lag) in enumerate(lags):
         observations.append(o[shift:][::lag])
 
     # initial HMM
-    hmm = bhmm.estimate_hmm(observations, nstates, output_model_type='discrete')
+    hmm = bhmm.estimate_hmm(observations, nstates, type='discrete')
     its[i] = lag*hmm.timescales
     likelihoods[i] = hmm.likelihood
 
