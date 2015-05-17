@@ -15,10 +15,6 @@ Plots and a LaTeX table is automatically generated.
 ## Manifest
 * `synthetic-example.py` - command-line executable to run to explore dependence of analysis on number of states and trajectory length
 * `generate-figure.py` - source to generate the figure used in paper
-* `synthetic-three-state-model-guess-nstates3.pdf` - plot of initial guess for states
-* `synthetic-three-state-model-mlhmm-nstates3.pdf` - plot of MLHMM fit
-* `synthetic-three-state-model-bhmm-nstates3.pdf` - plot of a typical BHMM sample (from the end of the sampling procedure)
-* `synthetic-three-state-model-bhmm-statistics.tex` - automatically-generated LaTeX table summarizing mean parameters and 95% confidence intervals
 
 ## Usage
 
