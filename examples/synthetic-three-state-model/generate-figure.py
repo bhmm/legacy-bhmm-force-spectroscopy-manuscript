@@ -61,7 +61,7 @@ def run(nstates, nsamples):
 
     # Initialize BHMM with MLHMM model.
     print "Sampling models from BHMM..."
-    sampler = bhmm.BayesianHMMSampler(O, nstates, initial_model=mle)
+    sampler = bhmm.BHMM(O, nstates, initial_model=mle)
     bhmm_models = sampler.sample(nsamples=nsamples, save_hidden_state_trajectory=False)
 
     # Generate a sample saving a hidden state trajectory.
