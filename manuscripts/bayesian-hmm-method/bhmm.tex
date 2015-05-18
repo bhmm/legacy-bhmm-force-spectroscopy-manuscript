@@ -266,7 +266,7 @@ We restrict ourselves to consideration of scalar functions $O(x)$, but the gener
 
 We presume the system under study has $M$ kinetically distinct states, in the sense that the system generally remains in a given state for several observation intervals $\Delta t$, but these states may not necessarily represent highly populated states of the system at equilibrium.
 We treat these conformational states as the hidden states of the model, because we cannot directly observe the identity of the metastable state in which the system resides.
-The hidden Markov model presumes the observed data $\bfm{O} \equiv \{o^{}_t\}$ was generated according to the following model dependent on the sequence of hidden states $\bfm{S} \equiv \{s_t\}$, parameters $\bfm{\Theta} \equiv \{\bfm{T}, \bfm{E}\}$, where $\bfm{T}$ is an $M \times M$ row-stochastic transition matrix and $\bfm{E}$ a set of emission parameters governing the observable (force or extension) distributions for each of the $M$ hidden states, prior information about the initial state distribution $\bfv{\rho}^{}$, {\color{red} and emission probability distribution $\varphi(o | \bfm{e})$},
+The hidden Markov model presumes the observed data $\bfm{O} \equiv \{o^{}_t\}$ was generated according to the following model dependent on the sequence of hidden states $\bfm{S} \equiv \{s_t\}$, parameters $\bfm{\Theta} \equiv \{\bfm{T}, \bfm{E}\}$, where $\bfm{T}$ is an $M \times M$ row-stochastic transition matrix and $\bfm{E}$ a set of emission parameters governing the observable (force or extension) distributions for each of the $M$ hidden states, prior information about the initial state distribution $\bfv{\rho}^{}$, and emission probability distribution $\varphi(o | \bfm{e})$,
 \begin{eqnarray}
 %s^{}_0 &\sim& \bfv{\rho} \nonumber \\
 %s^{}_t \mid s^{}_{t-1}, \bfm{T} &\sim& T_{s^{}_{t-1} \cdot} \nonumber \\
@@ -278,7 +278,7 @@ The hidden Markov model presumes the observed data $\bfm{O} \equiv \{o^{}_t\}$ w
 \Pr(s^{}_t \mid s^{}_{t-1}, \bfm{T}) &=& T_{s^{}_{t-1} s^{}_{t}} , \:\: t \ge 1 \nonumber \\
 \Pr(o^{}_t \mid s^{}_t, \bfm{e}_{s^{}_{t}}) &=& \varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}}) \label{equation:hmm-process} .
 \end{eqnarray}
-In diagrammatic form, the observed state data $\{o_t\}$ and corresponding hidden state history $\{s_t\}$ can be represented 
+In diagrammatic form, the observed state data $\bfm{O} \equiv \{o_t\}$ and corresponding hidden state history $\bfm{S} \equiv \{s_t\}$ can be represented 
 \begin{eqnarray}
 \begin{array}{llllllllll}
  \stackrel{\bfv{\rho}}{\longrightarrow} & s^{}_{0} & \stackrel{\bfm{T}}{\longrightarrow} & s^{}_{1} & \stackrel{\bfm{T}}{\longrightarrow} & s^{}_{2} & \stackrel{\bfm{T}}{\longrightarrow} & \cdots & \stackrel{\bfm{T}}{\longrightarrow} & s^{}_{L^{}} \\
@@ -286,21 +286,17 @@ In diagrammatic form, the observed state data $\{o_t\}$ and corresponding hidden
  & o^{}_{0} & & o^{}_{1} & & o^{}_{2} &  & & & o^{}_{L^{}} \\
 \end{array}
 \end{eqnarray} 
-The initial state distribution $\bfv{\rho}^{}$  reflects our knowledge of the initial conditions of the experiment that collected data $\bfm{{\color{red} O}}^{}$.
-In the case that the experiment was prepared in equilibrium, $\bfv{\rho}$ corresponds to the equilibrium distribution $\bfv{\pi}$ of the model transition matrix $\bfm{T}$; if the experiment was prepared out of equilibrium, $\bfv{\rho}$ may be chosen to reflect some other prior distribution (e.g.~the uniform prior).
+The initial state distribution $\bfv{\rho}^{}$  reflects our knowledge of the initial conditions of the experiment that collected observation data $\bfm{O}^{}$.
+In the case that the experiment was prepared in equilibrium, $\bfv{\rho}$ corresponds to the equilibrium distribution $\bfv{\pi}$ of the model transition matrix $\bfm{T}$; if the experiment was prepared out of equilibrium, $\bfv{\rho}$ may be chosen to reflect some other prior distribution (e.g.~the uniform prior to reflect uncertainty in the initial conditions).
 
-State transitions $(s^{}_{t-1} \rightarrow s^{}_{t})$ are governed by the discrete transition probability $T_{s^{}_{t-1} s^{}_{t}}$.
+Hidden state transitions $(s^{}_{t-1} \rightarrow s^{}_{t})$ are governed by the discrete transition probability $T_{s^{}_{t-1} s^{}_{t}}$.
 The Markov property of HMMs prescribes that the probability that a system originally in state $i$ at time $t$ is later found in state $j$ at time $t+\Delta t$ is dependent only on knowledge of the state $i$, and given by the corresponding matrix element $T_{ij}$ of the (row-stochastic) transition matrix $\bfm{T}$.
-{\color{magenta}The choice of $\Delta t$ is critical for the accuracy of the model \cite{NoeEtAl_PMMHMM_JCP13} --- $\Delta t$ must
-be chosen to reside in a time-scale gap between the $M$ slow relaxation processes that are resolved and faster relaxation
-processes that are not resolved by the model.}
+The choice of $\Delta t$ is critical for the accuracy of the model \cite{NoeEtAl_PMMHMM_JCP13}---$\Delta t$ must be chosen to reside in a time-scale gap between the $M$ slow relaxation processes that are resolved and faster relaxation processes that are not resolved by the model.
 % not sure if we need this discussion here. We can still say how a rate matrix can be computed at the end.
-%Alternatively, one could instead use the rate matrix $\bfm{K}$, related to the transition matrix $\bfm{T}$ through the equation $\bfm{T} = e^{\bfm{K} \Delta t}$.  
-%If the processes described by $\bfm{T}$ or $\bfm{K}$ are slow compared to the observation interval $\Delta t$, then we can easily estimate the rate matrix from the associated transition matrix in a way that avoids the matrix logarithm, through the expansion $\bfm{K} \approx (\bfm{T} - \bfm{I}) / \Delta t$, where $\bfm{I}$ denotes the $M \times M$ identity matrix.
+Alternatively, one could instead use the rate matrix $\bfm{K}$, related to the transition matrix $\bfm{T}$ through the equation $\bfm{T} = e^{\bfm{K} \Delta t}$.  
+If the processes described by $\bfm{T}$ or $\bfm{K}$ are slow compared to the observation interval $\Delta t$, then we can easily estimate the rate matrix from the associated transition matrix in a way that avoids the matrix logarithm, through the expansion $\bfm{K} \approx (\bfm{T} - \bfm{I}) / \Delta t$, where $\bfm{I}$ denotes the $M \times M$ identity matrix.
 
-{\color{magenta}The dependence of the experimental observable on the hidden state}
-%The probabilistic ``emission'' of observables from each state $(s^{}_{t} \rightarrow o^{}_{t})$ 
-is governed by the emission probability $\varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}})$, parametrized by observable emission parameters $\bfm{e}$.
+The dependence of the experimental observable $o_t$ on the hidden state $s_t$ is governed by the emission probability $\varphi(o^{}_{t} \mid \bfm{e}_{s^{}_{t}})$, parametrized by observable emission parameters $\bfm{e}$.
 For example, in the force spectroscopy applications described here, $\varphi(o \mid \bfm{e}_s)$ is taken to be a univariate normal (Gaussian) distribution parameterized by a mean $\mu$ and variance $\sigma^2$ that characterize each state, such that $\bfm{e}_i \equiv \{\mu_i, \sigma^2_i\}$.
 Other choices of observable distribution can easily be substituted in a modular way without affecting the structure of the algorithms presented here.
 
@@ -335,8 +331,8 @@ This is typically carried out using the Viterbi algorithm~\cite{viterbi:1967:IEE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bayesian hidden Markov model (BHMM)}
 
-Instead of simply determining the model that maximizes the likelihood of observing the data $\bfm{O}$ given the model parameters $\bfm{\Theta}$, {\color{magenta} we here propose to sample to full posterior distribution of model parameters given the observed data. 
-Towards this end, we emply Bayes' theorem to compute the posterior distribution:}
+Instead of simply determining the model that maximizes the likelihood of observing the data $\bfm{O}$ given the model parameters $\bfm{\Theta}$, we here propose to sample to full posterior distribution of model parameters given the observed data. 
+Towards this end, we employ Bayes' theorem to compute the posterior distribution:
 \begin{eqnarray}
 \Pr(\bfm{\Theta} \mid \bfm{O}) &\propto& \Pr(\bfm{O} \mid \bfm{\Theta}) \Pr(\bfm{\Theta}) \label{equation:bayes-theorem}.
 \end{eqnarray}
@@ -374,7 +370,7 @@ where $\mu$ is the mean force or extension characterizing a particular state, an
 Other choices for the observable distribution model $\phi(o | \mathbf{e})$ can easily be substituted should they be more appropriate for analyzing particular classes of experiments, and only require substituting an appropriate parameter update step.
 We note that marginal posterior distributions of each mean $\Pr(\mu_i | \bfm{O})$ reflect the statistical uncertainty in how well the mean force or position is determined, and need not correspond to the standard deviation $\sigma_i$, which may be much broader (or narrower, depending on the situation).
 
-{\color{red} Detailed descriptions of the algorithms used to fit the maximum likelihood hidden Markov model (MLHMM) and sample from the posterior distribution of the Bayesian hidden Markov model (BHMM) are given in the Appendix.}
+Detailed descriptions of the algorithms used to fit the maximum likelihood hidden Markov model (MLHMM) and sample from the posterior distribution of the Bayesian hidden Markov model (BHMM) are given in the Appendix.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -444,7 +440,7 @@ The histograms on the right side shows the state-resolved probabilities of sampl
 
 
 \begin{table*}
-\caption{{\bf Estimated mean model parameters and confidence intervals for synthetic timeseries data}}
+\caption{{\bf Estimated mean model parameters and confidence intervals for synthetic timeseries data (old table)}}
 \label{table:synthetic-confidence-intervals}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccccc}
 \hline
@@ -490,28 +486,26 @@ state std dev force (pN) & $\sigma_{1}$ & $1.000$ & $1.037_{\:0.951}^{\:1.134}$ 
 \label{section:model-system}
 
 To verify that our BHMM posterior sampling scheme reflects the true uncertainty in the model parameters, we can test that the scheme produces the expected estimates for synthetic data generated from a model with known parameters $\bfm{\Theta}^*$. 
-Given observed data $\bfm{O}$ generated from $\Pr(\bfm{O} \mid \bfm{\Theta}^*)$, sampling from the posterior $\Pr(\bfm{\Theta} \mid \bfm{O})$ using the scheme described in \color{blue} \emph{Sampling from the posterior of the BHMM} \color{black} will provide us with confidence intervals $[\theta_\mathrm{low}, \theta_\mathrm{high}]$ for a specified confidence interval $\alpha \in [0,1]$.
+Given observed data $\bfm{O}$ generated from $\Pr(\bfm{O} \mid \bfm{\Theta}^*)$, sampling from the posterior $\Pr(\bfm{\Theta} \mid \bfm{O})$ using the scheme described in Appendix~\ref{section:algorithms:bhmm-posterior-sampling} will provide us with confidence intervals $[\theta_\mathrm{low}, \theta_\mathrm{high}]$ for a specified confidence interval $\alpha \in [0,1]$.
 If these computed confidence intervals are accurate, we should find that the true model parameter $\theta^*$ lies in the computed confidence interval $[\theta^{(\alpha)}_\mathrm{low}, \theta^{(\alpha)}_\mathrm{high}]$ with probability $\alpha$.
 A 95\% confidence interval ($\alpha = 0.95$), for example, should contain the BHMM estimate in 95\% of such trials.
 This can be tested by generating synthetic observed data $\bfm{O}$ from $\Pr(\bfm{O} \mid \bfm{\Theta}^*)$ and verifying that we find $\theta^* \in [\theta^{(\alpha)}_\mathrm{low}, \theta^{(\alpha)}_\mathrm{high}]$ in a fraction $\alpha$ of these synthetic experiments.
 
-\color{red}
 As an illustration of the computation of confidence intervals, we simulated a three-state system intended to mimic a protein with (1) a high-compliance, low-force unfolded state, (2) a moderately compliant low-population intermediate at intermediate force, and (3) a low-compliance, high-force folded state.
 Here, the term ``compliance'' refers to the width of the force or extension distribution characterizing the state.
 Parameters of the model are given in Table~\ref{table:synthetic-confidence-intervals}, and the observation interval was taken to be $\tau = 1$ ms.
 An example realization of a model trajectory mimicking a passive-mode experiment---in which the trap was stationary---is shown in Figure~\ref{figure:model-stateassignments} along with the MLHMM state assignment.
-\color{black}
+
 We generated a trajectory of 100 000 observations, and characterized the BHMM mean parameter estimate and 95\% confidence intervals for a subset of this trajectory of varying lengths by sampling from the Bayesian posterior for 1 000 iterations.
 The results, shown in Table~\ref{table:synthetic-confidence-intervals}, show that the confidence intervals contract as trajectory length increases, as expected, and the BHMM-computed 95\% confidence intervals contain the true model parameters with the expected statistics.
-\color{red}
-In contrast, a model created from simply segmenting the observed forces into disjoint region and assigning state membership based on the force value alone estimates model parameters with significant bias even for 1 000 000 observations (see \emph{Supporting Information}).
-\color{black}
+By contrast, a model created from simply segmenting the observed forces into disjoint region and assigning state membership based on the force value alone estimates model parameters with significant bias even for 1 000 000 observations (see \emph{Supporting Information}).
 
 As a more rigorous test, we sampled 50 random models from the prior $\Pr(\bfm{\Theta})$ with two to six states, generated a 10 000 observation synthetic trajectory for each, and accumulated statistics on the observed fraction of time the true model parameters were within the BHMM confidence intervals for various values of the confidence interval width $\alpha$.
 The results of this test are depicted in \emph{Supplementary Figure 1}. %~\ref{figure:validation-confidence-intervals}.
 We expect that the plot traces the diagonal if the observed and expected confidence intervals are identical; an overestimate of the confidence interval will be above the diagonal, and an underestimate will fall below it.
 Because only a finite number of independent replicates of the experiment are conducted, there is some associated uncertainty with the observed confidence intervals.
 The results show that the observed confidence intervals line up with the expected confidence intervals to within statistical error, suggesting the BHMM confidence intervals neither underestimate nor overestimate the actual uncertainty in model parameters.
+{\color{red}[JDC: Move supplementary figure to main text or appendix?]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % p5ab HAIRPIN
