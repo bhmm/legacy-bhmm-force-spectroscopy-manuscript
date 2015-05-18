@@ -71,7 +71,7 @@ def run(nstates, nsamples):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation from RNAse-H data')
-    parser.add_argument('--nstates', default=4, type=int, help='number of states')
+    parser.add_argument('--nstates', default=5, type=int, help='number of states')
     parser.add_argument('--nsamples', default=100, type=int, help='number of samples in Bayesian estimator')
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
     args = parser.parse_args()

@@ -514,16 +514,53 @@ The results show that the observed confidence intervals line up with the expecte
 
 \begin{figure*}[tbp]
 \noindent
-\resizebox{\textwidth}{!}{\includegraphics{fiber3-trace11-mlhmm-stateassignments}}
-\caption{{\bf Experimental force trajectory of {\color{red} an RNA} hairpin and MLHMM state assignments.}
+%\resizebox{\textwidth}{!}{\includegraphics{fiber3-trace11-mlhmm-stateassignments}}
+\resizebox{\textwidth}{!}{\includegraphics{fiber3-trace11-mlhmm-stateassignments-nstate2}}
+\caption{{\bf Experimental force trajectory of an RNA hairpin and MLHMM state assignments.}
 Observed samples are colored by their hidden state assignments.
-Dark horizontal lines terminating in triangles to the right denote state means, while lightly colored bands indicate one standard deviation on either side of the state mean.
+Dark colored horizontal lines denote state mean forces, while lightly colored bands indicate one standard deviation about the state mean force.
 The gray histogram on the right side shows the total observed probability of samples, while the colored peaks show the weighted Gaussian output contribution from each state, and the black outline the weighted sum of the Gaussian output contributions from the HMM states.
 \label{figure:p5ab-observed-trajectory}}
 \end{figure*}
 
 \begin{table}
-\caption{{\bf BHMM model estimates for RNA hairpin data.}}
+    \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcc}
+        \hline
+        {\bf Property} & {\bf Symbol} & {\bf Value} \\
+        \hline
+            		Equilibrium probability 		& $\pi_{1}$ & $0.746_{\:0.723}^{\:0.769}$ \\
+		& $\pi_{2}$ & $0.254_{\:0.231}^{\:0.277}$ \\
+		\hline
+		Transition probability ($\Delta t = $0.05 s) 		& $T_{11}$ & $0.9888_{\:0.9878}^{\:0.9898}$ \\
+		& $T_{12}$ & $0.0112_{\:0.0102}^{\:0.0122}$ \\
+		& $T_{21}$ & $0.0329_{\:0.0301}^{\:0.0360}$ \\
+		& $T_{22}$ & $0.9671_{\:0.9640}^{\:0.9699}$ \\
+		\hline
+		\hline
+		Transition rate (s$^{-1}$) 		& $k_{12}$ & $0.2244_{\:0.2047}^{\:0.2444}$ \\
+		& $k_{21}$ & $0.6590_{\:0.6016}^{\:0.7191}$ \\
+		\hline
+		State mean lifetime (s) 		& $t_{1}$ & $4.440_{\:4.073}^{\:4.864}$ \\
+		& $t_{2}$ & $1.495_{\:1.368}^{\:1.639}$ \\
+		\hline
+		Relaxation time (s) 		& $\tau_{1}$ & $1.108_{\:1.034}^{\:1.191}$ \\
+		\hline
+		\hline
+		State force mean (pN) 		& $\mu_{1}$ & $13.844_{\:13.842}^{\:13.847}$ \\
+		& $\mu_{2}$ & $12.619_{\:12.614}^{\:12.623}$ \\
+		\hline
+		State force std dev (pN) 		& $s_{1}$ & $0.220_{\:0.218}^{\:0.221}$ \\
+		& $s_{2}$ & $0.263_{\:0.260}^{\:0.266}$ \\
+		\hline
+
+        \hline
+    \end{tabular*}
+    \caption{{\bf BHMM model estimates for RNA hairpin data.}}
+\end{table}
+            
+            
+\begin{table}
+\caption{{\bf BHMM model estimates for RNA hairpin data (old).}}
 \label{table:p5ab-bhmm-confidence-intervals}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcc}
 \hline
@@ -586,7 +623,6 @@ State mean lifetime (ms) & $\tau_{1}$ & $21.9_{\:20.0}^{\:24.1}$ \\
 
 We illustrate the BHMM approach applied to real force spectroscopy data by characterizing the average forces and transition rates among kinetically distinct states of {\color{red} an} RNA hairpin in an optical trap under passive (equilibrium) conditions.
 
-\color{red}
 A sample of p5ab RNA hairpin from \emph{Tetrahymena thermophilia} utilized in a previous study~\cite{wen-manosas:biophys-j:2007:rna-optical-tweezers} was provided by Jin-Der Wen, and prepared as previously described~\cite{wen-manosas:biophys-j:2007:rna-optical-tweezers}.  
 Within the population of RNA hairpin molecules in the examined sample, there were two chemically distinct species, exhibiting either apparent two-state (as reported previously~\cite{wen-manosas:biophys-j:2007:rna-optical-tweezers}) or three-state behavior (studied here).  
 For the purposes of testing this method, we examined a fiber that appeared to consistently exhibit three-state behavior upon visual inspection of the force timeseries data. 
@@ -598,14 +634,13 @@ The voltage on the position-sensitive detectors, reporting on the force on the b
 Each recorded experimental trace was 60 s in duration.
 From averaging forces over 1 s intervals at the initial and final parts of each trace, average force drift in the instrument was estimated to be 0.0015(5) pN/s.  
 The appropriate observation interval (1 ms) for BHMM analysis was determined by examination of force autocorrelation functions, which suggested that intrastate motion had completely decayed by 1 ms (see \emph{Supplementary Material: Choice of observation interval}).
-{\color{magenta}[FN: Update the selection of the HMM lag time. I suggest fixing the lag time $\tau$ first, running a maximum-likelihood HMM with N states, and then select $M<N$ based on how many relaxation timescales are larger than $\tau$]}
+{\color{red}[FN: Update the selection of the HMM lag time. I suggest fixing the lag time $\tau$ first, running a maximum-likelihood HMM with N states, and then select $M<N$ based on how many relaxation timescales are larger than $\tau$]}
 The observed 50 kHz force traces were therefore subsampled  to 1 kHz for analysis by retaining every 50th sample.
-\color{black}
 
 A single observed force trajectory at a fixed trap position adequate to cause hopping among multiple states is shown in Figure~\ref{figure:p5ab-observed-trajectory}.
 The most likely state trajectory from the MLHMM fit with three states is shown by coloring the observations most likely to be associated with each state, with bands of color indicating the mean and standard deviation about the mean force characterizing each state.
 
-{\color{magenta}[Describe how/why you selected three over two states in this model]}
+{\color{red}[FN: Describe how/why you selected three over two states in this model.] [JDC: It seems like we should go back to two states.]}
 Table~\ref{table:p5ab-bhmm-confidence-intervals} lists the BHMM posterior means and confidence intervals characterizing the three-state model extracted from this single 60 s observed force trace.
 Several things are notable about the estimated model parameters.
 Surprisingly, while there is a clearly-resolved intermediate-force state (\emph{state 2}) through which most of the flux from the high- and low-force states passes (as seen from large $K_{12}$ and $K_{23}$), there are nontrivial rate constants connecting the high and low force states directly ($K_{13}$), indicating that while a sequential mechanism involving passing through the intermediate state is preferred, it may not be an obligatory step in hairpin formation under these conditions.
@@ -625,17 +660,15 @@ Finally, the lifetime of the intermediate-force state is significantly shorter t
 We have described an approach to determining the first-order kinetic parameters and observable (force or extension) distributions characterizing conformational states in single-molecule force spectroscopy.
 By use of a Bayesian extension of hidden Markov models, we are able to characterize the experimental uncertainty in these parameters due to instrument noise and finite-size datasets.
 The use of a detailed balance constraint additionally helps reduce the experimental uncertainty over standard hidden Markov models, as both transitions into and out of conformational states provide valuable information about state kinetics and populations in data-poor conditions~\cite{noe:jcp:2008:transition-matrix-sampling,metzner-noe-schuette:pre:2009:transition-matrix-sampling}.
-Additionally, the Gibbs sampling framework used to sample from the Bayesian posterior can be easily extended to incorporate additional nuisance parameters, such as stochastic models of {\color{red}measurement noise} or laser power fluctuations.
+Additionally, the Gibbs sampling framework used to sample from the Bayesian posterior can be easily extended to incorporate additional nuisance parameters, such as stochastic models of measurement noise or laser power fluctuations.
 
-\color{red}
 Drift has historically been a challenging problem for force spectroscopy measurements, with experiments using previous-generation instruments resorting to short force-ramp experiments to minimize the cumulative effects of drift in recorded traces~\cite{collin:nature:2005:crooks-verification}.
 If the drift only affects the measured signal (e.g.~force or bead position), it is possible to correct for this drift during the analysis procedure using various approaches, such as the introduction of nuisance parameters characterizing linear drift (along with associated priors), or heuristic corrections applied directly to the observed data~\cite{moghtaden:comp-stat-data-anal:2012:empirical-mode-decomposition}.
 However, compensating for significant drift in the physical trap-pipette or trap-trap distance in analysis is difficult, as changes in the relative optical trap position will change the external potential felt by the molecule, and hence alter the kinetics and thermodynamics.
 Without imposing a model of how those change with this distance, as well as a physical or empirical model for the dynamics of drift, it is impossible to include these effects during analysis.
 
-Fortunately, obtaining many drift-free measurement traces of the duration presented here with current-generation miniaturized optical traps that employ a pipette to suction one of the beads in the tether (such as the one employed here~\cite{bustamante-smith:2006:minitweezers-patent}), the collection of data sufficiently free of drift is regularly achievable~\cite{bustamante:csh-protocols:2009:optical-tweezers}.
+Fortunately, obtaining many drift-free measurement traces of the duration presented here with current-generation miniaturized optical traps that employ a pipette to suction one of the beads in the tether (such as the one employed for the collection of the apo-myoglobin and RNA hairpin data presented here~\cite{bustamante-smith:2006:minitweezers-patent}), the collection of data sufficiently free of drift is regularly achievable~\cite{bustamante:csh-protocols:2009:optical-tweezers}.
 Moreover, drift is even less problematic for newer generations of instrument that utilize two optical traps instead of a pipette~\cite{block:nature:2003:dual-trap,bustamante:annu-rev-biochem:2008:optical-tweezers}.
-\color{black}
 
 We have opted to make use of a reversible transition matrix to describe the statistical kinetic behavior between the observation intervals $\Delta t$, but we note that it is possible to use a reversible rate matrix instead by substituting a rate matrix sampling scheme~\cite{hummer:njp:2005:rate-matrix-sampling} in the appropriate stage of the Gibbs sampling updates.
 \color{red}
@@ -653,11 +686,9 @@ The field of Bayesian experimental design~\cite{chaloner:stat-sci:1995:bayesian-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Acknowledgments}
-The authors thank Sergio Bacallado (Stanford University) {\color{red}and anonymous referees} for helpful feedback on an earlier version of this manuscript, and Steve Presse (UCSF) for engaging discussions on this topic.
-\color{red}
+The authors thank Sergio Bacallado (Stanford University) for helpful feedback on an earlier version of this manuscript, and Steve Presse (UCSF) for engaging discussions on this topic.
 JDC acknowledges support from a QB3-Berkeley Distinguished Postdoctoral Fellowship and the Memorial Sloan Kettering Cancer Center.
 BGK gratefully acknowledges the support by the German Research Foundation (DFG) within the collaborative research center SFB 765 (associated project).
-\color{black}
 FN acknowledges funding by DFG Grant 825/2 and ERC starting grant ``pcCell''.
 This work was supported in part by a grant from the NSF (SM).
 
@@ -703,7 +734,7 @@ The initial parameters are then computed as,
 \sigma^2_m &=& N_m^{-1} \sum_{t=0}^{L^{}} (o^{}_{t} - \mu_m)^2 \, h_m(o^{}_{t}) .
 \end{eqnarray}
 
-{\color{red} To try to maximize the likelihood in Eq.~\ref{equation:gaussian-mixture-likelihood}, this} approximation is then improved upon by iterating the expectation-maximization procedure described by Bilmes~\cite{bilmes:1998:expectation-maximization},
+To maximize the likelihood in Eq.~\ref{equation:gaussian-mixture-likelihood}, the expectation-maximization procedure described by Bilmes~\cite{bilmes:1998:expectation-maximization} is then performed,
 \begin{eqnarray}
 \pi'_m &=& N_\mathrm{tot}^{-1} \sum_{t=0}^{L^{}} \chi_m(o^{}_t, \bfm{E}, \bfv{\pi}) \nonumber \\
 \mu'_m &=& (\pi'_m N_\mathrm{tot})^{-1} \sum\limits_{t=0}^{L^{}} o^{}_{t} \, \chi_m(o^{}_{t}, \bfm{E}, \bfv{\pi}) \nonumber \\
@@ -713,7 +744,7 @@ where the function $\chi_m(o, \bfm{E}, \bfv{\pi})$ is given by the fuzzy members
 \begin{eqnarray}
 \chi_m(o, \bfm{E}, \bfv{\pi}) &=& \frac{\pi_m \, \varphi(o \mid \bfm{e}_m)}{\sum\limits_{l=1}^M \pi_l \, \varphi(o \mid \bfm{e}_l)} .
 \end{eqnarray}
-The iterative procedure is terminated at iteration $j$ when the change in the parameters $\{\bfv{\pi}, \bfv{\mu}, \bfv{\sigma}^2\}$ falls below a certain relative threshold, such as $\|\bfv{\pi}^{[j]} - \bfv{\pi}^{[j-1]}\|_2 / \|\bfv{\pi}^{[j]}\|_2 < 10^{-4}$ {\color{red}, where $\| \ldots \|_2$ denotes the euclidean L2 norm}.
+The iterative procedure is terminated at iteration $j$ when the change in the parameters $\{\bfv{\pi}, \bfv{\mu}, \bfv{\sigma}^2\}$ falls below a certain relative threshold, such as $\|\bfv{\pi}^{[j]} - \bfv{\pi}^{[j-1]}\|_2 / \|\bfv{\pi}^{[j]}\|_2 < 10^{-4}$, where $\| \ldots \|_2$ denotes the Euclidean L2-norm.
 
 \subsubsection{Transition matrix estimation}
 
@@ -726,10 +757,9 @@ A symmetric $M \times M$ matrix $\bfm{X} \equiv (x_{ij})$ is initialized by
 \begin{eqnarray}
 x_{ij} = x_{ji} &=& c_{ij} + c_{ji} .
 \end{eqnarray}
-\color{red}
+
 The iterative procedure described in Algorithm 1 of \cite{noe:jcp:2011:msm-review} is then applied to update the transition matrix in a manner that preserves the detailed balance constraint while maximizing the likelihood function $\Pr(\bfm{T} | \bfm{S})$.
 This algorithm proceeds as follows.
-\color{black}
 
 For each update iteration, we first update the diagonal elements of $\bfm{X}$:
 \begin{eqnarray}
@@ -752,7 +782,7 @@ Once a sufficient number of iterations $j$ have been completed to compute a stab
 T_{ij} &=& x_{ij} / x_{i*} . 
 \end{eqnarray}
 Note that the equilibrium probability vector $\bfv{\pi}$ computed during the Gaussian mixture model fitting is not respected during this step.
-{\color{magenta}[FN: clarify which of the two $\pi$-vectors is used in the subsequent MLHMM]}
+{\color{red}[FN: clarify which of the two $\pi$-vectors is used in the subsequent MLHMM.]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Fitting a maximum likelihood HMM}
@@ -761,13 +791,11 @@ Note that the equilibrium probability vector $\bfv{\pi}$ computed during the Gau
 The HMM parameters $\bfm{\Theta} \equiv \{ \bfm{T}, \bfm{E} \}$ are fit to the observed data $\bfm{O}$ through use of the expectation-maximization (EM) algorithm~\cite{dempster-laird-rubin:1977:j-royal-statist-soc-b:em-algorithm}.
 This is an iterative procedure, where the model parameters are subsequently refined through successive iterations, according to the following
 scheme:
-\color{magenta}
 \begin{eqnarray}
 \mathbf{S'} &=& \arg \max_S \Pr(S \mid \mathbf{T}, \mathbf{E}, \mathbf{O})\\
 \mathbf{T'} &=& \arg \max_T \Pr(T \mid \mathbf{S}, \mathbf{O})\\
 \mathbf{E'} &=& \arg \max_E \Pr(E \mid \mathbf{S}, \mathbf{O})
 \end{eqnarray}
-\color{black}
 The initial HMM is usually quick to compute, and can give the experimenter a rough idea of the model parameters, as well as providing a useful starting point for sampling models from the Bayesian posterior.
 
 During each iteration, the Baum-Welch algorithm~\cite{baum:1970:ann-math-statist:baum-welch} is used to compute $\bfm{\Xi}^{} \equiv (\xi^{}_{tij})$, which represents the probability that the system transitions from hidden state $i$ at time $t-1$ to hidden state $j$ at time $t$, and $\gamma^{}_{ti}$, the probability that the system occupied state $i$ at time $t$.
@@ -864,15 +892,14 @@ It is straightforward to show the result of these sampling steps reconstitutes t
 \subsubsection{Updating the transition probabilities}
 
 %If no detailed balance constraint is used and the prior $\Pr(\bfm{T})$ is Dirichlet in each row of the transition matrix $\bfm{T}$, it is possible to generate an independent sample of the transition matrix from the conditional distribution $\Pr(\bfm{T}' \mid \bfm{S}')$ by sampling each row of the transition matrix from the conjugate Dirichlet posterior using the transition counts from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.
-{\color{red} If we assume each row of the transition matrix $\bfm{T}$ is independent with Dirichlet prior $\Pr(\bfm{T})$, then it is possible to sample from the transition matrix posterior Dirichlet distribution $\Pr(\bfm{T}' \mid \bfm{S}')$, given the transition counts calculated from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.}
+If we assume each row of the transition matrix $\bfm{T}$ is independent with Dirichlet prior $\Pr(\bfm{T})$, then it is possible to sample from the transition matrix posterior Dirichlet distribution $\Pr(\bfm{T}' \mid \bfm{S}')$, given the transition counts calculated from the sampled state sequence $\bfm{S}'$~\cite{noe:jcp:2008:transition-matrix-sampling}.
 However, because physical systems in the absence of energy input through an external driving force should satisfy detailed balance, we make use of this constraint in updating our transition probabilities, since this has been demonstrated to substantially reduce parameter uncertainty in the data-limited regime~\cite{noe:jcp:2008:transition-matrix-sampling}.
 
 
 %%%%%%%%%%%%%%
 
-\color{magenta}
-
-Here we employ the reversible transition matrix sampling algorithm derived in [{\bf FN: reference to reversible T-matrix estimation preprint when available}]. We first define a coordinate transform to unconditional transition probabilities:
+Here we employ the reversible transition matrix sampling algorithm derived in {\color{red} [FN: reference to reversible T-matrix estimation preprint when available.]}. 
+We first define a coordinate transform to unconditional transition probabilities:
 \begin{equation}
   \label{eq:transformation_T_X}
   x_{ij} = \pi_{i} T_{ij}
@@ -1023,8 +1050,6 @@ In brief, we can summarize the above procedure by the algorithm:
 \caption{Reversible sampling algorithm \label{alg:reversible_sampler}}
 \end{algorithm}
 
-\color{black}
-
 %The transition matrix is updated using the reversible transition matrix sampling scheme of No\'{e}~\cite{noe:jcp:2008:transition-matrix-sampling,chodera-noe:jcp:2011:observable-sampling}.
 %Here, an adjusted count matrix $\bfm{C} \equiv (c_{ij})$ is computed using the updated hidden state sequence $\bfm{S}'$,
 %\begin{eqnarray}
@@ -1094,9 +1119,7 @@ If the prior is chosen to be composed of independent priors for each state, as i
 \end{eqnarray}
 then the full BHMM posterior (Eq.~\ref{equation:full-posterior}) will be invariant under any permutation of the states.
 This behavior might be undesirable, as the states may switch labels during the posterior sampling procedure; this will require any analysis of the models sampled from the posterior to account for the possible permutation symmetry in the states.
-{\color{magenta}Here we choose to order the states according to their value in the experimental observable (force or extension), thus removing
-the ambiguity due to exchangeable state labels. Note that this practice can artificially restrict the confidence intervals of the states when 
-the distributions of the experimental observable overlap strongly in neighboring states}
+Here we choose to order the states according to their value in the experimental observable (force or extension), thus removing the ambiguity due to exchangeable state labels. Note that this practice can artificially restrict the confidence intervals of the states when  the distributions of the experimental observable overlap strongly in neighboring states.
 %On the other hand, breaking this symmetry (e.g., by enforcing an ordering on the state mean observables) can artificially restrict the confidence intervals of the states, which might additionally complicate data analysis. 
 
 

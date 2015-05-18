@@ -69,8 +69,8 @@ def run(nstates, nsamples):
     conf = 0.95
     sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models)
     generate_latex_table(sampled_hmm, conf=conf, dt=tau, time_unit='s',
-                         caption='Bayesian HMM parameter estimates for p5ab hairpin data.',
-                         outfile='p5ab-bhmm-statistics-table.tex')
+                         caption='BHMM model estimates for RNA hairpin data.',
+                         outfile='p5ab-bhmm-statistics-table'+str(nstates)+'.tex')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation from p5ab hairpin data')
