@@ -5,6 +5,7 @@ Generate plots for synthetic three-state force spectroscopy model.
 """
 
 import bhmm
+import argparse
 from bhmm.util.analysis import generate_latex_table
 
 # dynamically import plotting tools
@@ -66,16 +67,20 @@ def run(nstates, nsamples):
 
     # write latex table with sample statistics
     conf = 0.95
-    sampled_hmm = bhmm.BHMM(mle, bhmm_models)
+    sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models)
     generate_latex_table(sampled_hmm, conf=conf, dt=tau, time_unit='s',
                          caption='BHMM model estimates for RNA hairpin data.',
-                         outfile='p5ab-bhmm-statistics-table-nstate'+str(nstates)+'.tex')
+                         outfile='p5ab-bhmm-statistics-table'+str(nstates)+'.tex')
 
 if __name__ == "__main__":
-    # Be verbose.
-    bhmm.config.verbose = True
+    parser = argparse.ArgumentParser(description='Maximum-likelihood and Bayesian HMM estimation from p5ab hairpin data')
+    parser.add_argument('--nstates', default=3, type=int, help='number of states')
+    parser.add_argument('--nsamples', default=100, type=int, help='number of samples in Bayesian estimator')
+    parser.add_argument('--verbose', dest='verbose', action='store_true', default=True, help='be loud and noisy')
+    args = parser.parse_args()
 
-    # Fit MLHMM and BHMM
-    nstates = 2
-    nsamples = 1000
-    run(nstates, nsamples)
+    # be verbose?
+    bhmm.config.verbose = args.verbose
+
+    # go
+    run(args.nstates, args.nsamples)
