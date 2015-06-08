@@ -66,7 +66,7 @@ def run(nstates, nsamples):
 
     # write latex table with sample statistics
     conf = 0.95
-    sampled_hmm = bhmm.BHMM(mle, bhmm_models)
+    sampled_hmm = bhmm.SampledGaussianHMM(mle, bhmm_models)
     generate_latex_table(sampled_hmm, conf=conf, dt=tau, time_unit='s',
                          caption='BHMM model estimates for RNA hairpin data.',
                          outfile='p5ab-bhmm-statistics-table-nstate'+str(nstates)+'.tex')

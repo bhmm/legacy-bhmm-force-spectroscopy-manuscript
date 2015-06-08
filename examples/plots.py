@@ -161,7 +161,7 @@ def plot_state_assignments(model, s_t, o_t, tau=1.0, time_units=None, obs_label=
 
     if pdf_filename:
         # Write figure.
-        pp.savefig()
+        pp.savefig(bbox_inches='tight')
         pp.close()
 
     return
