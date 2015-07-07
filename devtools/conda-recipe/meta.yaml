@@ -15,7 +15,7 @@ requirements:
     - numpy
     - scipy
     - pyemma >=1.2
-    - scikit-learn
+    #- scikit-learn
     # - matplotlib
     # - seaborn
 
@@ -25,7 +25,7 @@ requirements:
     - numpy
     - scipy
     - pyemma >=1.2
-    - scikit-learn
+    #- scikit-learn
     # - matplotlib
     # - seaborn
 

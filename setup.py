@@ -168,7 +168,6 @@ setup(
         'numpy',
         'scipy',
         'pyemma>=1.2',
-        'scikit-learn',
         ],
     ext_modules = cythonize(extensions)
     )
