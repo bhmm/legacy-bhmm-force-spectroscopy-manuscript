@@ -1,0 +1,30 @@
+\begin {figure}[tbp]
+\noindent 
+\resizebox {\columnwidth }{!}{\includegraphics {confidence-intervals-random}}
+\caption {{\bf Validation of confidence intervals using randomly-generated synthetic test data.}
+Observed confidence intervals (points) are plotted as a function of the desired confidence intervals for equilibrium probabilities ($\pi _i$), transition probabilities ($T_{ij}$), state means ($\mu _i$), and state standard deviations ($\sigma _i$).
+The black diagonal line indicates perfect agreement between expected and observed confidence intervals, while observed confidence intervals above the diagonal indicate overestimates of the uncertainty, and below the diagonal indicate underestimates.
+Because only 50 random models were evaluated, error bars denote a 95\% confidence interval in the estimated observed confidence intervals.
+\label {figure:validation-confidence-intervals}}
+\end {figure}
+\begin {figure*}[p]
+\noindent 
+\resizebox {\textwidth }{!}{\includegraphics {model-segmentation-stateassignments-1000}}
+\resizebox {\textwidth }{!}{\includegraphics {model-segmentation-stateassignments-10000}}
+\resizebox {\textwidth }{!}{\includegraphics {model-segmentation-stateassignments-100000}}
+\resizebox {\textwidth }{!}{\includegraphics {model-segmentation-stateassignments-1000000}}
+\caption {{\bf Synthetic force trajectory and segmentation state assignments.}
+Observed samples are colored by their hidden state assignments from a model in which the observable is segmented into regions that correspond to each state, for trajectories of length $10^3$ (\emph {top}), $10^4$ (\emph {upper middle}), $10^5$ (\emph {lower middle}), and $10^6$ (\emph {bottom}) observations.
+The segmentation was derived by first fitting the set of all observed forces to a mixture of Gaussians and then dividing the observations at the crossing points of the Gaussian mixture component probability density functions.
+Dark horizontal lines terminating in triangles to the right denote state means, while lightly colored bands indicate one standard deviation on either side of the state mean.
+The gray histogram on the right side shows the total observed probability of samples, while the colored peaks show the contribution from each state, assuming a Gaussian fit to the mean and standard deviation.
+\label {figure:model-segmentation-stateassignments}}
+\end {figure*}
+\begin {figure}[p]
+\noindent 
+\resizebox {\columnwidth }{!}{\includegraphics {fiber3-trace14-autocorrelation}}
+\caption {{\bf Normalized fluctuation autocorrelation function for p5ab hairpin under conditions stabilizing a single conformation.}
+\emph {Top:} The force histogram for a trap position (different from that in main text Fig.~4) showing that a single conformational state is dominant at this trap configuration.
+\emph {Bottom:} The normalized integrated autocorrelation function for the force trace, showing rapid decay of non-Markovian contributions within 1 ms.
+\label {figure:p5ab-autocorrelation}}
+\end {figure}
